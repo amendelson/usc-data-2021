@@ -1,7 +1,7 @@
 <div class="header">
 <h1 class="ml7">
   <span class="text-wrapper">
-    <span class="letters"><p id ="usc p">Data&nbsp;&nbsp;Journalism&nbsp;&nbsp;&nbsp;USC&nbsp;&nbsp;2020</p></span>
+    <span class="letters"><p id ="usc p">Data&nbsp;&nbsp;Journalism&nbsp;&nbsp;&nbsp;USC&nbsp;&nbsp;2021</p></span>
   </span>
 </h1>
 </div>
@@ -11,7 +11,7 @@
 
 <style>
 .header{
-      background-image: linear-gradient(to right, #ff5f6d, #ffc371);
+      background-image: linear-gradient(to right, #a8c0ff, #3f2b96);
 }
 
 .ml7 {
@@ -146,7 +146,7 @@ Other/interactivity:
 
 We talked election maps this week. Now it's your turn to make one of your own.
 
-[Click here to download the data](https://amendelson.github.io/usc-data-2020/data/prop64.zip) that you'll use.
+[Click here to download the data](https://amendelson.github.io/usc-data-2021/data/prop64.zip) that you'll use.
 
 What is it? It's precinct-level election results, from California's [landmark Proposition 64](https://ballotpedia.org/California_Proposition_64,_Marijuana_Legalization_(2016)) in 2016. That was the ballot measure that legalized recreational marijuana in the Golden State. The shapefile features precincts in Los Angeles County. Roughly 1 in 4 California voters lives here in L.A. County.
 

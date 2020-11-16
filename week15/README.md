@@ -1,7 +1,7 @@
 <div class="header">
 <h1 class="ml7">
   <span class="text-wrapper">
-    <span class="letters"><p id ="usc p">Data&nbsp;&nbsp;Journalism&nbsp;&nbsp;&nbsp;USC&nbsp;&nbsp;2020</p></span>
+    <span class="letters"><p id ="usc p">Data&nbsp;&nbsp;Journalism&nbsp;&nbsp;&nbsp;USC&nbsp;&nbsp;2021</p></span>
   </span>
 </h1>
 </div>
@@ -11,7 +11,7 @@
 
 <style>
 .header{
-      background-image: linear-gradient(to right, #ff5f6d, #ffc371);
+      background-image: linear-gradient(to right, #a8c0ff, #3f2b96);
 }
 
 .ml7 {
@@ -95,7 +95,7 @@ library(tidyverse)
 Let's load our data ... which I think is based on an old TV show.
 
 ```
-Data <- read_csv("https://amendelson.github.io/usc-data-2020/week15/Data.csv")
+Data <- read_csv("https://amendelson.github.io/usc-data-2021/week15/Data.csv")
 ```
 
 OK, one easy way to spot correlation is using charts. Let's try this.

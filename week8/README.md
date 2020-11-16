@@ -1,7 +1,7 @@
 <div class="header">
 <h1 class="ml7">
   <span class="text-wrapper">
-    <span class="letters"><p id ="usc p">Data&nbsp;&nbsp;Journalism&nbsp;&nbsp;&nbsp;USC&nbsp;&nbsp;2020</p></span>
+    <span class="letters"><p id ="usc p">Data&nbsp;&nbsp;Journalism&nbsp;&nbsp;&nbsp;USC&nbsp;&nbsp;2021</p></span>
   </span>
 </h1>
 </div>
@@ -12,7 +12,7 @@
 
 <style>
 .header{
-      background-image: linear-gradient(to right, #ff5f6d, #ffc371);
+      background-image: linear-gradient(to right, #a8c0ff, #3f2b96);
 }
 
 .ml7 {

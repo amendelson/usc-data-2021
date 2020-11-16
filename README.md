@@ -12,7 +12,7 @@
 
 <style>
 .header{
-      background-image: linear-gradient(to right, #ff5f6d, #ffc371);
+      background-image: linear-gradient(to right, #a8c0ff, #3f2b96);
 }
 
 .ml7 {
@@ -81,7 +81,7 @@ anime.timeline({loop: true})
 
 <script>
 
-var end = new Date('05/07/2020 5:00 PM');
+var end = new Date('05/07/2021 5:00 PM');
 
     var _second = 1000;
     var _minute = _second * 60;
