@@ -118,11 +118,11 @@ var end = new Date('05/07/2021 5:00 PM');
 -->
 <br>
 
-Welcome to the website for JOUR 561: Fundamentals of Data                   Journalism Reporting. You'll find links to course materials here. You can get to this page by typing in `tiny.cc/2wv4gz` in your browser's address bar.
+Welcome to the website for JOUR 561: Fundamentals of Data Journalism Reporting. You'll find links to course materials here. You can get to this page by typing in `tiny.cc/2wv4gz` in your browser's address bar.
 
 Here is [the class syllabus](docs/syllabus.pdf).
 
-The class meets 6:30 to 8:30 on Thursday nights in ANN 408. The final exam is on May 7 from 7-9 p.m.
+The class meets 6:30 to 8:30 on Monday nights in ~the virtual realm~ (over Zoom). The final exam is on May 5 from 7-9 p.m.
 
 This class will involve the use of technical tools, and coding. But if you want to learn how to use mapping and data analysis to report great stories, you're in the right class. The journalism is the most important part.
 
@@ -134,7 +134,6 @@ This class will involve the use of technical tools, and coding. But if you want 
 * **[Week Four](week4/)**: Visualizing Data with ggplot, Part 1 – faceting. Class project discussion.
 * Week Five: President's Day (no class)
 * **[Week Six](week6/)**: Visualizing Data with ggplot, Part 2 – layers and interactivity
-
 * **[Week Seven](week7/)**: Class project discussion
 * **[Week Eight](week8/)**: Writing functions and loops in R
 * **[Week Nine](week9/)**: Tidyuniverse in R – cleaning and transforming data.
@@ -146,38 +145,20 @@ This class will involve the use of technical tools, and coding. But if you want 
 * **[Week Fifteen](week14/)**: Bulk geocoding data with an API
 * Final
 
+<br>
 
 
 ```
-
- .----------------.  .----------------.
-| .--------------. || .--------------. |
-| |  ________    | || |      __      | |
-| | |_   ___ `.  | || |     /  \     | |
-| |   | |   `. \ | || |    / /\ \    | |
-| |   | |    | | | || |   / ____ \   | |
-| |  _| |___.' / | || | _/ /    \ \_ | |
-| | |________.'  | || ||____|  |____|| |
-| |              | || |              | |
-| '--------------' || '--------------' |
- '----------------'  '----------------'
- .----------------.  .----------------.
-| .--------------. || .--------------. |
-| |  _________   | || |      __      | |
-| | |  _   _  |  | || |     /  \     | |
-| | |_/ | | \_|  | || |    / /\ \    | |
-| |     | |      | || |   / ____ \   | |
-| |    _| |_     | || | _/ /    \ \_ | |
-| |   |_____|    | || ||____|  |____|| |
-| |              | || |              | |
-| '--------------' || '--------------' |
- '----------------'  '----------------'
-
-
+██████╗      █████╗     ████████╗     █████╗ 
+██╔══██╗    ██╔══██╗    ╚══██╔══╝    ██╔══██╗
+██║  ██║    ███████║       ██║       ███████║
+██║  ██║    ██╔══██║       ██║       ██╔══██║
+██████╔╝    ██║  ██║       ██║       ██║  ██║
+╚═════╝     ╚═╝  ╚═╝       ╚═╝       ╚═╝  ╚═╝
 ```
 
 ---
-
+<br><br>
 Us in this class when learning about new datasets we can FOIA:
 
-![](https://media.giphy.com/media/5GoVLqeAOo6PK/giphy.gif)
+![](https://thumbs.gfycat.com/ApprehensiveGroundedIndianskimmer-small.gif)
