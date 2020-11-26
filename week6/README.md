@@ -71,192 +71,218 @@ anime.timeline({loop: true})
 
 
 # Week 6
-This week, we're talking about the importance of **functions and loops**. Then we'll discuss **tidy** data ... and how to make your data tidy.
+This week, we're going to become wizards of ggplot2, the best way to create graphics in R.
 
 ---
 
+### Hands-on
 
-### Hands-on — Part 1
+Adapted from a great tutorial by [Rebecca Barter](http://www.rebeccabarter.com/blog/2017-11-17-ggplot2_tutorial/).
 
-Here we're gonna scrape the web with the `rvest` package.
+**The layered grammar of graphics**
 
-Start by installing and loading it.
+ggplot2 is based around three ideas. They make more sense in practice, but it's helpful to outline them up front:
+
+* data: a data frame containing the variables that you want to visualize
+* geoms: geometric objects (circles, lines, text) that you will actually see
+* aesthetics: the mapping from the data to the geographic objects (e.g. by describing position, size, colour, etc)
+
+**1.Let's download our data and start making a chart**
+
+We're using the the gapminder dataset again this week.
+
+First, fire up R Studio. Then, we'll load everything we need and remind ourselves what this data looks like.
 
 ```
-install.packages("rvest")
-library(rvest)
 library(tidyverse)
-library(magrittr)
+library(gapminder)
+head(gapminder)
 ```
 
-Next, we're going to tell it the URL of the page we want to scrape.
+So ggplot. We tell it what data (a data frame) we are interested in and how each of the variables in our dataset will be used (e.g. as an x or y coordinate, as a coloring variable or a size variable, etc).
+
+The output of this function is a grid with gdpPercap as the x-axis and lifeExp as the y-axis. However, we have not yet told ggplot what type of geometric object the data will be mapped to, so no data has been displayed.
+
+Essentially, we've created the grid for the chart. But not the chart yet.
 
 ```
-url <- "https://en.wikipedia.org/wiki/List_of_Governors_of_California_by_age"
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp))
 ```
 
-Next, we're gonna ... just go ahead and scrape the table. There's a lot going on here, so let's examine closely.
+Next, we will add a “geom” layer to our ggplot object. This one will be points.
 
 ```
-govs <- url %>%
-    read_html() %>%
-    html_nodes("table") %>%
-    extract2(2) %>%
-    html_table(header = NA) %>%
-    as.data.frame()
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) +
+  # add a points layer on top
+  geom_point()
 ```
 
-Let's take a look. There are some issues, so let's fix them before getting to the fun stuff. Let's delete these columns we don't need, first off.
+Now we're talking.
+
+**2. Transparency, color, size**
+
+What we've done is map each country (row) in the data to a point in the space defined by the GDP and life expectancy value. The end result is a fascinating blob of points. Fortunately, there are many things that we can do to make this blob of points look better.
+
+One possibility? Change the transparency of the points by setting the transparency.
+
+
+Let's change the 'alpha' argument.
 
 ```
-govs$Age.at.inauguration <- NULL
-govs$Age.at.endof.term <- NULL
-govs$Length.ofretirement <- NULL
-govs$Lifespan <- NULL
-```
-Let's rename some vectors with ugly names.
-
-```
-colnames(govs)[1] <- c("num_in_office")
-colnames(govs)[3] <- c("rank_by_age")
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) +
+  geom_point(alpha = 0.5)
 ```
 
-Let's delete that pesky last row. See what we're doing here?
+What other tweaks could we make? How about changing the color of the points to be blue instead of black, and making the points smaller.
 
 ```
-govs <- head(govs,40)
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) +
+  geom_point(alpha = 0.5, col = "cornflowerblue", size = 0.5)
 ```
+As you can see, ggplot will change many things at the same time.
 
-There are also some footnotes in the DOB column. Good for Wikipedia users, not good for us. This is a `regular expression`. Regex could be it's own class, but here we're just removing everything in a string after the `[` character.
+But what if we want different colors for the points, based on the continent of each country?
 
-```
-govs$`Date of birth` <- gsub("\\[.*","",govs$`Date of birth`)
-govs$`End ofterm` <- gsub("\\[.*","",govs$`End ofterm`)
-
-```
-
-And finally, let's make the number in office an actual number. We'll need this later.
+We can make use of the aes() function. Let check out what those continents are first.
 
 ```
-govs$num_in_office <- as.numeric(govs$num_in_office)
+unique(gapminder$continent)
 ```
 
-Whew. Data should be much cleaner now. Except ... our dates don't look like dates at all.
-
-How can we change that? Let's do it with the `lubridate` package.
+Got it. Ok, so we can plug that continent vector into ggplot, and ask it to color the points differently, depending on what continent the country represents.
 
 ```
-install.packages("lubridate")
-library(lubridate)
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, color = continent)) +
+  geom_point(alpha = 0.5, size = 0.5)
 ```
-
-Let's see what this function does
-
-```
-mdy(govs$`Date of birth`)
-```
-
-Perfect. This stuff used to be a total pain, but lubridate has made it so, so painless.
-
-Now we can fix all our dates.
+Nice! There's other things we can change, too, like the size of the points. Say we want to make those correspond to the population of the country.
 
 ```
-govs$`Date of birth` <- mdy(govs$`Date of birth`)
-govs$`Date of inauguration` <- mdy(govs$`Date of inauguration`)
-govs$`End ofterm` <- mdy(govs$`End ofterm`)
-govs$`Date of death` <- mdy(govs$`Date of death`)
-
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, color = continent, size = pop)) +
+  geom_point(alpha = 0.5)
 ```
 
-We can also do math with dates. Check it out.
+**3. Other chart types**
+
+So far, we have only seen scatterplots (point geoms). But there are many other geoms we *could* add, including:
+
+* lines
+* histograms
+* boxplots and violin plots
+* barplots
+* smoothed curves
+
+Let's try some out
+
+What's different about this one?
 
 ```
-govs$`Date of birth` - govs$`Date of inauguration`
+ggplot(gapminder, aes(x = year, y = lifeExp, group = country, color = continent)) +
+  geom_line(alpha = 0.5)
 ```
 
-Awesome. Let's bring this class full circle and chart the data. We'll do that with the ``ggalt`` package.
+How might this one be different?
 
 ```
-install.packages("ggalt")
-library(ggalt)
+ggplot(gapminder, aes(x = continent, y = lifeExp, fill = continent)) +
+  geom_boxplot()
 ```
 
-Now, we can actually plot out their terms in office.
-
+Let's bust out a historgram.
 ```
-govs %>% ggplot(aes(y = reorder(Governor, num_in_office), x = `Date of inauguration`, xend = `End ofterm`)) + geom_dumbbell(color = "steelblue")
-```
-
-We can also plot out their lifespans. Some of them are still among the living, so let's code their 'death' as today's date. Take a look at how we do that.
-
-```
-govs$`Date of death` <- case_when(is.na(govs$`Date of death`) == TRUE ~ Sys.Date(), TRUE ~ govs$`Date of death`)
-
-govs %>% ggplot(aes(y = reorder(Governor, num_in_office), x = `Date of birth`, xend = `Date of death`)) + geom_dumbbell(color = "steelblue")
+ggplot(gapminder, aes(x = lifeExp)) +
+  geom_histogram(binwidth = 3)
 ```
 
-
-
-We can use to this work ... to talk about functions and for loops by building off our scraping.
-
-Let do that, now we want to answer the question: **during what year were the most governors alive at the same time?**
-
-How would we do that, just conceptually?
-
-...
-
-Let's start our journey by just testing out one year, to see which governors were alive then.
+And finally let's try to find how a mathematical model might interpret our data. Don't publish these, but they can be helpful for internal use.
 
 ```
-govs %>% filter(`Date of birth` < mdy("01-01-1900") & `Date of death` > mdy("01-01-1900"))
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, size = pop)) +
+  geom_point(aes(color = continent), alpha = 0.5) +
+  geom_smooth(se = FALSE, method = "loess", color = "grey30")
 ```
 
-Great. If we just wanted a count, not all the columns, we could do this.
+**4.Let's make something publishable**
+
+We want a focused chart to show readers. So let’s filter to a single year.
 
 ```
-govs %>% 
-	filter(`Date of birth` < mdy("01-01-1900") & `Date of death` > mdy("01-01-1900")) %>% 
-	nrow()
+gapminder_2007 <- gapminder %>% filter(year == 2007)
+ggplot(gapminder_2007, aes(x = gdpPercap, y = lifeExp, color = continent, size = pop)) +
+  geom_point(alpha = 0.5)
 ```
 
-Ok, here is what we're going to do. But let's unpack it for a given `i` before we run the whole function. There is a lot going on here.
+Let's get fancy and use a logorithmic scale. Who kjnows what that is?
+
+Here's how we do that.
 
 ```
-alive_stats <- data.frame()
-
-for (i in 1806:2018) {
-
-	begin <- mdy(paste("01-01-",i,sep=""))
-	end <- mdy(paste("01-01-",(i+1),sep=""))
-
-	count_alive <- govs %>% filter(`Date of birth` < begin & `Date of death` > end) %>% nrow() %>% as.numeric()
-
-	alive_stats <- rbind(count_alive, alive_stats)
-
-	alive_stats$yr[1] <- i
-
-}
+ggplot(gapminder_2007, aes(x = gdpPercap, y = lifeExp, color = continent, size = pop)) +
+  geom_point(alpha = 0.5) +
+  scale_x_log10()
 ```
 
-Let's rename that first column.
+Now it's time to add a title and change the name of the y-axis and legends using the labs function.
 
 ```
-colnames(alive_stats)[1] <- c("count")
+ggplot(gapminder_2007, aes(x = gdpPercap, y = lifeExp, color = continent, size = pop)) +
+  # add scatter points
+  geom_point(alpha = 0.5) +
+  # log-scale the x-axis
+  scale_x_log10() +
+  # change labels
+  labs(title = "GDP versus life expectancy in 2007",
+       x = "GDP per capita (log scale)",
+       y = "Life expectancy",
+       size = "Popoulation",
+       color = "Continent")
 ```
 
-And of course, we can plot this out.
+
+**5. Themes**
+
+Mabye you, like me, kinda hate this gray background.
+
+Well, you can change it with the ggthemes package.
 
 ```
-alive_stats %>% ggplot(aes(x=yr, y=count)) + geom_bar(stat="identity")
+install.packages("ggthemes")
+library(ggthemes)
 ```
+
+Let's take a look at some of [the available themes](https://yutannihilation.github.io/allYourFigureAreBelongToUs/ggthemes/) and try them out on that last chart.
+
+Finally, let's go crazy and see if we can figure out everything this is doing.
+
+```
+ggplot(gapminder_2007, aes(x = gdpPercap, y = lifeExp, color = continent, size = pop)) +
+  # add scatter points
+  geom_point(alpha = 0.5) +
+  # clean the axes names and breaks
+  scale_x_log10(breaks = c(1000, 10000),
+                limits = c(200, 120000)) +
+  # change labels
+  labs(title = "GDP versus life expectancy in 2007",
+       x = "GDP per capita (log scale)",
+       y = "Life expectancy",
+       size = "Popoulation (millions)",
+       color = "Continent") +
+  # change the size scale
+  scale_size(range = c(0.1, 10),
+             breaks = 1000000 * c(250, 500, 750, 1000, 1250),
+             labels = c("250", "500", "750", "1000", "1250")) +
+  # add a nicer theme
+  theme_classic(base_family = "Helvetica")
+```
+
+And let's talk about how to save a chart you create in R.
 
 
 ---
 
 ### Homework
 
-* **R Data Viz Assignment**. Using data from your Final Project create two charts using ggplot.
-	* If you need inspiration, use code from our walkthrough today. Or, take a look at some of these simple cool R chart examples.
-	* Due on Monday by 5 PM.
-* [Go to this page and register for a Census API Key](https://api.census.gov/data/key_signup.html)
-* [Create](https://github.com/join) or make sure you have a Github account and know the PW
+* R Data Viz Assignment. Using data from your capstone or Final Project create two charts using ggplot.
+	* If you need inspiration, use code from our walkthrough today. Or, take a look at some of these [simple cool R chart examples](https://www.r-graph-gallery.com/).
+	* Due on **Monday by 5 PM**.
+* Story memo: 50-100 words about Final Project progress over last week

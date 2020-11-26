@@ -5,6 +5,7 @@
   </span>
 </h1>
 </div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -71,99 +72,127 @@ anime.timeline({loop: true})
 
 
 # Week 10
-This week, we're diving head first into mapping.
-
----
-
-### Lecture
-
-[Slides](https://docs.google.com/presentation/d/1HXFaS8TLeBzc9yq2wx7aV40ZqtBpApvpeznJ6x2QNek/edit#slide=id.p)
-
----
-
-### Hands-on
-
-**1. Download these**
-
-[Link to pre-k data](../data/prek_sites.csv) | [Caltrans transpo GIS data](https://gisdata-caltrans.opendata.arcgis.com/datasets/77f2d7ba94e040a78bfbe36feb6279da_0) (we're using the the "SHN lines" data)
-
-**2. Unzip the highways shapefile and double click to open in QGIS**
-
-![](imgs/1.png)
-
-Cool, it's every highway in the state! Let's take a second to unpack what we see here.
-
-Then, let's:
-
-* zoom in/out
-* click with the info tool to learn more
-* change the color, shape and transparency of the lines (double-click on the name in the layers panel)
-* open up the attribute table (right click on the name in the layers panel)
-* figure out what the CRS is
-	* Wait. [What's a CRS?](https://github.com/d3/d3-geo-projection)
-
-**3. Drag the Pre-K sites into the application to open in QGIS**
-
-Wait, that doesn't work.
-
-Let's inspect what we see there. Any clues on where the geographic data might be?
-
-**4. Brining in a spreadsheet into a map**
-
-How do we import it? Go to Layer > Add Layer > Add Delimited Text Layer
-
-**5. Figure out if our school sites are within 500 feet of a state highway**
-
-Let's install MMQGIS.
-
-Plugins > Manage and Install Plugins > [MMQGIS](http://michaelminn.com/linux/mmqgis/)
-
-Now we can create a buffer. Should we create it on the Pre-K sites, or on the highways?
-
-Now go to MMQGIS > Create > Create Buffers
-
-<img src="imgs/2.png" width="400">
-
-Your maps should look like this when it's done:
-
-![](imgs/3.png)
-
-Cool. It's all there now. Let's remove the original highway shapefile.
-
-We can — time pending, see how to add a basemap with QuickMapServices here.
-
-
-**6. How do we figure out which sites are within the 500 foot buffer?**
-
-We need to join the 2 layers.
-
-What's that mean?
-
-Here's how we do it:
-
-<img src="imgs/4.png" width="400">
-
-It might take a couple minutes (or more) to run. Why?
-
-
-**7. That looks like all of them?**
-
-Let's open up the attribute table and see what actually happened under the hood.
-
-* How can we select just the ones that really joined?
-* How can we export this as a spreadsheet and analyze for our story (we'll go deeper into this, time pending)
 
 
 ---
 
-### Links
+### Quick hands-on
 
-* [QGIS tutorials](https://www.qgistutorials.com/en/) — great resource
-* [Polluted Preschools: 169 LA childcare centers are too close to freeways](https://www.scpr.org/news/2016/03/29/58878/pollution-near-preschools-is-impacting-nearly-10-0/)
+**1. Bring in census data, tidily and easily**
+
+There's a great R package for importing census data. Let's install and load it.
+
+```
+library(leaflet)
+library(tidyverse)
+```
+
+```
+install.packages("tidycensus")
+library(tidycensus)
+```
+
+To get the data from the Census' API, you need to provide an API Key. Find yours and use it.
+
+```
+census_api_key("TK", overwrite = FALSE, install = FALSE)
+```
+
+Once you've done that, you can quickly grab data. If you want to know the median rent by state in 1990 ... now you can.
+
+```
+m90 <- get_decennial(geography = "state", variables = "H043A001", year = 1990)
+```
+
+It can also easily be plotted.
+
+```
+m90 %>%
+  ggplot(aes(x = value, y = reorder(NAME, value))) +
+  geom_point()
+```
+
+We can also grab data from the more-frequently-updated American Community Survey. It's like a rolling Census that's being conducted all the time.
+
+Let's look at public transit.
+
+```
+transpo <- get_acs(geography = "state", variables = "B08006_008", geometry = FALSE, survey = "acs5", year = 2017)
+```
+
+```
+head(transpo)
+```
+
+Interesting. But what we really want is the **rate** of transit riders. Not the raw number. So let's get that, starting with the total number of folks who commute to work.
+
+```
+transpo_total <- get_acs(geography = "state", variables = "B08006_001", geometry = FALSE, survey = "acs5", year = 2017)
+head(transpo_total)
+
+```
+
+Alright, now we need to get these ... together in the same data frame! That's where the `join` comes in. We did some of these in QGIS. What could we use in these two datasets to link them up?
+
+**2. A detour into joins**
+
+All you need to join is a common column. Here's how it works in tidyverse.
+
+```
+transpo <- transpo %>% left_join(transpo_total, by = "NAME")
+```
+
+Now we can get the rate.
+
+```
+transpo$rate <- transpo$estimate.x / transpo$estimate.y * 100
+head(transpo)
+```
+
+**3. Map out (after another join)**
+
+We need to join that transportation data to our shapefile. Unfortunately, the syntax there is a little different. Fortunately, it does work.
+
+For this, we'll need to bring back the states shapefile we used last week,
+
+```
+library(rgdal)
+states <- readOGR("path/to/yourfile/",
+  layer = "tl_2019_us_state", GDAL1_integer64_policy = TRUE)
+```
+
+Then we can do a join.
+
+```
+states_with_rate <- sp::merge(states, transpo, by = "NAME")
+```
+
+Let's try this out.
+
+```
+qpal <- colorQuantile("PiYG", states_with_rate$rate, 9)
+
+
+states_with_rate %>% leaflet() %>% addTiles() %>%
+  addPolygons(weight = 1, smoothFactor = 0.5, opacity = 1.0, fillOpacity = 0.5,
+    color = ~qpal(rate),
+    highlightOptions = highlightOptions(color = "white", weight = 2,
+      bringToFront = TRUE))
+```
+
+Alright. What does each line do? Let's play around with it and see what changes?
+
+If we have extra time, we'll work on adding [popup text](https://rstudio.github.io/leaflet/popups.html) and [a legend](https://rstudio.github.io/leaflet/legends.html).
+
+
+
 
 ---
 
 ### Homework
 
-* **Final Project**: You should be working on drafts of story and graphics, looking for unanswered questions. The rough draft is due on April 13!!!
+* Github: Create an account if you don't already have one. If you do, make sure you know the password.
+* HW: Finish coding if we didn't in class.
+* Final Project: Your data analysis should almost done. You should be reporting and writing as you go.
 * Story memo: 50-100 words about Final Project progress over last week
+

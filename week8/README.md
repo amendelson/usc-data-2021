@@ -5,7 +5,6 @@
   </span>
 </h1>
 </div>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -72,127 +71,192 @@ anime.timeline({loop: true})
 
 
 # Week 8
-
+This week, we're talking about the importance of **functions and loops**. Then we'll discuss **tidy** data ... and how to make your data tidy.
 
 ---
 
-### Quick hands-on
 
-**1. Bring in census data, tidily and easily**
+### Hands-on — Part 1
 
-There's a great R package for importing census data. Let's install and load it.
+Here we're gonna scrape the web with the `rvest` package.
+
+Start by installing and loading it.
 
 ```
-library(leaflet)
+install.packages("rvest")
+library(rvest)
 library(tidyverse)
+library(magrittr)
 ```
 
-```
-install.packages("tidycensus")
-library(tidycensus)
-```
-
-To get the data from the Census' API, you need to provide an API Key. Find yours and use it.
+Next, we're going to tell it the URL of the page we want to scrape.
 
 ```
-census_api_key("TK", overwrite = FALSE, install = FALSE)
+url <- "https://en.wikipedia.org/wiki/List_of_Governors_of_California_by_age"
 ```
 
-Once you've done that, you can quickly grab data. If you want to know the median rent by state in 1990 ... now you can.
+Next, we're gonna ... just go ahead and scrape the table. There's a lot going on here, so let's examine closely.
 
 ```
-m90 <- get_decennial(geography = "state", variables = "H043A001", year = 1990)
+govs <- url %>%
+    read_html() %>%
+    html_nodes("table") %>%
+    extract2(2) %>%
+    html_table(header = NA) %>%
+    as.data.frame()
 ```
 
-It can also easily be plotted.
+Let's take a look. There are some issues, so let's fix them before getting to the fun stuff. Let's delete these columns we don't need, first off.
 
 ```
-m90 %>%
-  ggplot(aes(x = value, y = reorder(NAME, value))) +
-  geom_point()
+govs$Age.at.inauguration <- NULL
+govs$Age.at.endof.term <- NULL
+govs$Length.ofretirement <- NULL
+govs$Lifespan <- NULL
 ```
-
-We can also grab data from the more-frequently-updated American Community Survey. It's like a rolling Census that's being conducted all the time.
-
-Let's look at public transit.
+Let's rename some vectors with ugly names.
 
 ```
-transpo <- get_acs(geography = "state", variables = "B08006_008", geometry = FALSE, survey = "acs5", year = 2017)
+colnames(govs)[1] <- c("num_in_office")
+colnames(govs)[3] <- c("rank_by_age")
 ```
 
-```
-head(transpo)
-```
-
-Interesting. But what we really want is the **rate** of transit riders. Not the raw number. So let's get that, starting with the total number of folks who commute to work.
+Let's delete that pesky last row. See what we're doing here?
 
 ```
-transpo_total <- get_acs(geography = "state", variables = "B08006_001", geometry = FALSE, survey = "acs5", year = 2017)
-head(transpo_total)
+govs <- head(govs,40)
+```
+
+There are also some footnotes in the DOB column. Good for Wikipedia users, not good for us. This is a `regular expression`. Regex could be it's own class, but here we're just removing everything in a string after the `[` character.
+
+```
+govs$`Date of birth` <- gsub("\\[.*","",govs$`Date of birth`)
+govs$`End ofterm` <- gsub("\\[.*","",govs$`End ofterm`)
 
 ```
 
-Alright, now we need to get these ... together in the same data frame! That's where the `join` comes in. We did some of these in QGIS. What could we use in these two datasets to link them up?
-
-**2. A detour into joins**
-
-All you need to join is a common column. Here's how it works in tidyverse.
+And finally, let's make the number in office an actual number. We'll need this later.
 
 ```
-transpo <- transpo %>% left_join(transpo_total, by = "NAME")
+govs$num_in_office <- as.numeric(govs$num_in_office)
 ```
 
-Now we can get the rate.
+Whew. Data should be much cleaner now. Except ... our dates don't look like dates at all.
+
+How can we change that? Let's do it with the `lubridate` package.
 
 ```
-transpo$rate <- transpo$estimate.x / transpo$estimate.y * 100
-head(transpo)
+install.packages("lubridate")
+library(lubridate)
 ```
 
-**3. Map out (after another join)**
-
-We need to join that transportation data to our shapefile. Unfortunately, the syntax there is a little different. Fortunately, it does work.
-
-For this, we'll need to bring back the states shapefile we used last week,
+Let's see what this function does
 
 ```
-library(rgdal)
-states <- readOGR("path/to/yourfile/",
-  layer = "tl_2019_us_state", GDAL1_integer64_policy = TRUE)
+mdy(govs$`Date of birth`)
 ```
 
-Then we can do a join.
+Perfect. This stuff used to be a total pain, but lubridate has made it so, so painless.
+
+Now we can fix all our dates.
 
 ```
-states_with_rate <- sp::merge(states, transpo, by = "NAME")
+govs$`Date of birth` <- mdy(govs$`Date of birth`)
+govs$`Date of inauguration` <- mdy(govs$`Date of inauguration`)
+govs$`End ofterm` <- mdy(govs$`End ofterm`)
+govs$`Date of death` <- mdy(govs$`Date of death`)
+
 ```
 
-Let's try this out.
+We can also do math with dates. Check it out.
 
 ```
-qpal <- colorQuantile("PiYG", states_with_rate$rate, 9)
-
-
-states_with_rate %>% leaflet() %>% addTiles() %>%
-  addPolygons(weight = 1, smoothFactor = 0.5, opacity = 1.0, fillOpacity = 0.5,
-    color = ~qpal(rate),
-    highlightOptions = highlightOptions(color = "white", weight = 2,
-      bringToFront = TRUE))
+govs$`Date of birth` - govs$`Date of inauguration`
 ```
 
-Alright. What does each line do? Let's play around with it and see what changes?
+Awesome. Let's bring this class full circle and chart the data. We'll do that with the ``ggalt`` package.
 
-If we have extra time, we'll work on adding [popup text](https://rstudio.github.io/leaflet/popups.html) and [a legend](https://rstudio.github.io/leaflet/legends.html).
+```
+install.packages("ggalt")
+library(ggalt)
+```
+
+Now, we can actually plot out their terms in office.
+
+```
+govs %>% ggplot(aes(y = reorder(Governor, num_in_office), x = `Date of inauguration`, xend = `End ofterm`)) + geom_dumbbell(color = "steelblue")
+```
+
+We can also plot out their lifespans. Some of them are still among the living, so let's code their 'death' as today's date. Take a look at how we do that.
+
+```
+govs$`Date of death` <- case_when(is.na(govs$`Date of death`) == TRUE ~ Sys.Date(), TRUE ~ govs$`Date of death`)
+
+govs %>% ggplot(aes(y = reorder(Governor, num_in_office), x = `Date of birth`, xend = `Date of death`)) + geom_dumbbell(color = "steelblue")
+```
 
 
+
+We can use to this work ... to talk about functions and for loops by building off our scraping.
+
+Let do that, now we want to answer the question: **during what year were the most governors alive at the same time?**
+
+How would we do that, just conceptually?
+
+...
+
+Let's start our journey by just testing out one year, to see which governors were alive then.
+
+```
+govs %>% filter(`Date of birth` < mdy("01-01-1900") & `Date of death` > mdy("01-01-1900"))
+```
+
+Great. If we just wanted a count, not all the columns, we could do this.
+
+```
+govs %>% 
+	filter(`Date of birth` < mdy("01-01-1900") & `Date of death` > mdy("01-01-1900")) %>% 
+	nrow()
+```
+
+Ok, here is what we're going to do. But let's unpack it for a given `i` before we run the whole function. There is a lot going on here.
+
+```
+alive_stats <- data.frame()
+
+for (i in 1806:2018) {
+
+	begin <- mdy(paste("01-01-",i,sep=""))
+	end <- mdy(paste("01-01-",(i+1),sep=""))
+
+	count_alive <- govs %>% filter(`Date of birth` < begin & `Date of death` > end) %>% nrow() %>% as.numeric()
+
+	alive_stats <- rbind(count_alive, alive_stats)
+
+	alive_stats$yr[1] <- i
+
+}
+```
+
+Let's rename that first column.
+
+```
+colnames(alive_stats)[1] <- c("count")
+```
+
+And of course, we can plot this out.
+
+```
+alive_stats %>% ggplot(aes(x=yr, y=count)) + geom_bar(stat="identity")
+```
 
 
 ---
 
 ### Homework
 
-* Github: Create an account if you don't already have one. If you do, make sure you know the password.
-* HW: Finish coding if we didn't in class.
-* Final Project: Your data analysis should almost done. You should be reporting and writing as you go.
-* Story memo: 50-100 words about Final Project progress over last week
-
+* **R Data Viz Assignment**. Using data from your Final Project create two charts using ggplot.
+	* If you need inspiration, use code from our walkthrough today. Or, take a look at some of these simple cool R chart examples.
+	* Due on Monday by 5 PM.
+* [Go to this page and register for a Census API Key](https://api.census.gov/data/key_signup.html)
+* [Create](https://github.com/join) or make sure you have a Github account and know the PW

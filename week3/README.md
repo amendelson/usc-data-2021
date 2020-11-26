@@ -70,197 +70,39 @@ anime.timeline({loop: true})
 </script>
 
 
-# Week 3
-This week, we're diving into data analysis in R.
+# Week Three
+This week, we're going to talk about what makes a great data story, and how you can create one of your own.
+
+---
+
+### Survey responses
+
+<img src="survey1.png" width = "1000">
+
+<img src="survey2.png" width = "1000">
 
 ---
 
 ### Lecture
 
-No lecture. All coding!
-
----
-
-### Hands-on
-
-**1. Getting started**
-
-Let's install and load a couple packages we'll need today.
-
-```
-install.packages("tidyverse")
-install.packages("gapminder")
-```
-
-Installing them doesn't make them available, however. We need to load them.
-
-```
-library(tidyverse)
-library(gapminder)
-```
-
-Let's use some of the commands we learned last week to figure out what `gapminder` is.
-
-```
-head(gapminder)
-summary(gapminder)
-str(gapminder)
-glimpse(gapminder)
-```
-
-Let's try a new one
-
-```
-arrange(gapminder, pop)
-```
-
-Interesting. What does this do?
-
-```
-arrange(gapminder, desc(pop))
-```
-
-
-This lesson is adapted from Hadley Wickham's great [Data Science In Tidyverse](https://github.com/hadley/data-science-in-tidyverse/blob/master/slides/02-Transform.pdf) workshop.
-
-**2. How can we work with only the data we want?**
-
-Like, we probably don't want to review the data for every nation at once. How can we ask more focused, targeted questions?
-
-<img src ="imgs/1.png" width = "800">
-
-<img src ="imgs/2.png" width = "800">
-
-Let's try it out.
-
-```
-filter(gapminder, country == "United States")
-```
-
-What do these do.
-
-```
-filter(gapminder, continent == "Americas")
-filter(gapminder, year > 1980)
-filter(gapminder, pop > 20000000 & pop < 100000000)
-filter(gapminder, pop > 20000000 & continent == "Americas" & gdpPercap <= 4000)
-filter(gapminder, pop > 20000000 & continent != "Americas" & gdpPercap <= 4000)
-
-```
-
-How would you look filer for countries in Asia with high life expectancies?
-
-**3. Arrange**
-
-What if we want to see the countries with the highest life expectancies. Or the lowest? That's where *arrange* comes in.
-
-<img src ="imgs/3.png" width = "800">
-<img src ="imgs/4.png" width = "800">
-
-We just saw it, but worth reiterating: This nifty function reorders data however we tell it to. Try that:
-
-```
-arrange(gapminder, lifeExp)
-```
-
-You can also arrange from highest to lowest, or in descending order.
-
-```
-arrange(gapminder, desc(lifeExp))
-
-```
-
-**5. Piping**
-
-What if you want to do two things at once?
-
-You *could* do this
-
-```
-gapminder_2007 <- filter(gapminder, year == 2007)
-arrange(gapminder_2007, desc(lifeExp))
-```
-
-Or you could save yourself some time and energy, and embrace the pipe: **%>%**
-
-Basically, it transfers the last command you made to the next command.
-
-<img src ="imgs/5.png" width = "800">
-
-Let's try that ourselves
-
-```
-gapminder %>% filter(country == "Canada")
-```
-
-Awesome. But the power really comes in when you use it more than once.
-
-```
-gapminder %>%
-	filter(year == 2007) %>%
-	arrange(desc(lifeExp))
-```
-
-You can also use command shift M on a Mac or ctrl shift M on windows to get one.
-
-**6. Mutate**
-
-How can you create a new vector (a.k.a. column) on your data frame? By using *mutate*.
-
-Let's try it out, by looking at our dataframe first:
-
-```
-head(gapminder)
-```
-
-OK, so to get the GDP, we could do the following:
-
-```
-gapminder %>% mutate(gpd = gdpPercap * pop)
-```
-
-And what if we wanted to use a pipe to sort it?
-
-```
-gapminder %>% mutate(gdp = gdpPercap * pop) %>% arrange(desc(gdp))
-```
-
-
-**8. Charting**
-
-Let's make a quick chart by first using filter.
-
-```
-us <- filter(gapminder, country == "United States")
-```
-
-We're gonna feed that into **ggplot2**, the tidyverse's beloved package for creating charts.
-
-The syntax of ggplot is a little different, you'll notice it uses plus signs instead of the pipe. Try this out:
-
-```
-ggplot(us, aes(x = year, y = lifeExp)) +
- geom_line()
-```
-
-And you know what? It's not really any harder to plot every country in the Americas at once.
-
-```
-gapminder %>% filter(continent == "Americas") %>% ggplot(aes(x=year, y=lifeExp)) + geom_line(aes(color=country), lwd=1.5, alpha=.65)
-```
-
-What else could we do here?
-
-Can we make a small multiples chart?
+[Slides](https://docs.google.com/presentation/d/1jvM-G1XMNOmFjkXntOSTZ-sR7eIpqgd9DCuo30r6mhI/edit?usp=sharing)
 
 ---
 
 ### Links
 
-* Hadley Wickham's [great tidyverse tutorials](https://github.com/hadley/data-science-in-tidyverse)
+Some stories mentioned:
+
+* [Fatal Force](https://www.washingtonpost.com/graphics/2018/national/police-shootings-2018/?utm_term=.2af26663c5d2)
+* [Spies in the skies](https://www.buzzfeednews.com/article/peteraldhous/spies-in-the-skies#.ymOqmNLdjW)
+* [Why Kevin Durant’s Shoes Keep Falling Off
+](https://fivethirtyeight.com/features/why-kevin-durants-shoes-keep-falling-off/)
+* ['A tricky area of philanthropy': LA mayor solicits millions for his favored causes](https://www.scpr.org/news/2017/08/23/74917/la-mayor-garcetti-behested-payments/)
+* [Where will the West's next deadly wildfire strike? The risks are everywhere](https://www.azcentral.com/in-depth/news/local/arizona-wildfires/2019/07/22/wildfire-risks-more-than-500-spots-have-greater-hazard-than-paradise/1434502001/)
 
 ---
 
 ### Homework
 
-* Submit story pitch for group data story, including ideas for story and graphic, and what datasets you could use (including links). At least 400 words. Due by MONDAY @ 5.
+* **Important**: Sign up [using this spreadsheet](https://docs.google.com/spreadsheets/d/14IInAih3Vt4fj4e2IH1uIUXeJbnzcM8XhdVx9w-V8oc/edit#gid=0) to do a critique
+* **Also important**: Final Project: Every group pitches 3 ideas by Monday @ 5 PM

@@ -71,218 +71,196 @@ anime.timeline({loop: true})
 
 
 # Week 4
-This week, we're going to become wizards of ggplot2, the best way to create graphics in R.
+This week, we're diving into data analysis in R.
+
+---
+
+### Lecture
+
+No lecture. All coding!
 
 ---
 
 ### Hands-on
 
-Adapted from a great tutorial by [Rebecca Barter](http://www.rebeccabarter.com/blog/2017-11-17-ggplot2_tutorial/).
+**1. Getting started**
 
-**The layered grammar of graphics**
+Let's install and load a couple packages we'll need today.
 
-ggplot2 is based around three ideas. They make more sense in practice, but it's helpful to outline them up front:
+```
+install.packages("tidyverse")
+install.packages("gapminder")
+```
 
-* data: a data frame containing the variables that you want to visualize
-* geoms: geometric objects (circles, lines, text) that you will actually see
-* aesthetics: the mapping from the data to the geographic objects (e.g. by describing position, size, colour, etc)
-
-**1.Let's download our data and start making a chart**
-
-We're using the the gapminder dataset again this week.
-
-First, fire up R Studio. Then, we'll load everything we need and remind ourselves what this data looks like.
+Installing them doesn't make them available, however. We need to load them.
 
 ```
 library(tidyverse)
 library(gapminder)
+```
+
+Let's use some of the commands we learned last week to figure out what `gapminder` is.
+
+```
+head(gapminder)
+summary(gapminder)
+str(gapminder)
+glimpse(gapminder)
+```
+
+Let's try a new one
+
+```
+arrange(gapminder, pop)
+```
+
+Interesting. What does this do?
+
+```
+arrange(gapminder, desc(pop))
+```
+
+
+This lesson is adapted from Hadley Wickham's great [Data Science In Tidyverse](https://github.com/hadley/data-science-in-tidyverse/blob/master/slides/02-Transform.pdf) workshop.
+
+**2. How can we work with only the data we want?**
+
+Like, we probably don't want to review the data for every nation at once. How can we ask more focused, targeted questions?
+
+<img src ="imgs/1.png" width = "800">
+
+<img src ="imgs/2.png" width = "800">
+
+Let's try it out.
+
+```
+filter(gapminder, country == "United States")
+```
+
+What do these do.
+
+```
+filter(gapminder, continent == "Americas")
+filter(gapminder, year > 1980)
+filter(gapminder, pop > 20000000 & pop < 100000000)
+filter(gapminder, pop > 20000000 & continent == "Americas" & gdpPercap <= 4000)
+filter(gapminder, pop > 20000000 & continent != "Americas" & gdpPercap <= 4000)
+
+```
+
+How would you look filer for countries in Asia with high life expectancies?
+
+**3. Arrange**
+
+What if we want to see the countries with the highest life expectancies. Or the lowest? That's where *arrange* comes in.
+
+<img src ="imgs/3.png" width = "800">
+<img src ="imgs/4.png" width = "800">
+
+We just saw it, but worth reiterating: This nifty function reorders data however we tell it to. Try that:
+
+```
+arrange(gapminder, lifeExp)
+```
+
+You can also arrange from highest to lowest, or in descending order.
+
+```
+arrange(gapminder, desc(lifeExp))
+
+```
+
+**5. Piping**
+
+What if you want to do two things at once?
+
+You *could* do this
+
+```
+gapminder_2007 <- filter(gapminder, year == 2007)
+arrange(gapminder_2007, desc(lifeExp))
+```
+
+Or you could save yourself some time and energy, and embrace the pipe: **%>%**
+
+Basically, it transfers the last command you made to the next command.
+
+<img src ="imgs/5.png" width = "800">
+
+Let's try that ourselves
+
+```
+gapminder %>% filter(country == "Canada")
+```
+
+Awesome. But the power really comes in when you use it more than once.
+
+```
+gapminder %>%
+	filter(year == 2007) %>%
+	arrange(desc(lifeExp))
+```
+
+You can also use command shift M on a Mac or ctrl shift M on windows to get one.
+
+**6. Mutate**
+
+How can you create a new vector (a.k.a. column) on your data frame? By using *mutate*.
+
+Let's try it out, by looking at our dataframe first:
+
+```
 head(gapminder)
 ```
 
-So ggplot. We tell it what data (a data frame) we are interested in and how each of the variables in our dataset will be used (e.g. as an x or y coordinate, as a coloring variable or a size variable, etc).
-
-The output of this function is a grid with gdpPercap as the x-axis and lifeExp as the y-axis. However, we have not yet told ggplot what type of geometric object the data will be mapped to, so no data has been displayed.
-
-Essentially, we've created the grid for the chart. But not the chart yet.
+OK, so to get the GDP, we could do the following:
 
 ```
-ggplot(gapminder, aes(x = gdpPercap, y = lifeExp))
+gapminder %>% mutate(gpd = gdpPercap * pop)
 ```
 
-Next, we will add a “geom” layer to our ggplot object. This one will be points.
+And what if we wanted to use a pipe to sort it?
 
 ```
-ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) +
-  # add a points layer on top
-  geom_point()
-```
-
-Now we're talking.
-
-**2. Transparency, color, size**
-
-What we've done is map each country (row) in the data to a point in the space defined by the GDP and life expectancy value. The end result is a fascinating blob of points. Fortunately, there are many things that we can do to make this blob of points look better.
-
-One possibility? Change the transparency of the points by setting the transparency.
-
-
-Let's change the 'alpha' argument.
-
-```
-ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) +
-  geom_point(alpha = 0.5)
-```
-
-What other tweaks could we make? How about changing the color of the points to be blue instead of black, and making the points smaller.
-
-```
-ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) +
-  geom_point(alpha = 0.5, col = "cornflowerblue", size = 0.5)
-```
-As you can see, ggplot will change many things at the same time.
-
-But what if we want different colors for the points, based on the continent of each country?
-
-We can make use of the aes() function. Let check out what those continents are first.
-
-```
-unique(gapminder$continent)
-```
-
-Got it. Ok, so we can plug that continent vector into ggplot, and ask it to color the points differently, depending on what continent the country represents.
-
-```
-ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, color = continent)) +
-  geom_point(alpha = 0.5, size = 0.5)
-```
-Nice! There's other things we can change, too, like the size of the points. Say we want to make those correspond to the population of the country.
-
-```
-ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, color = continent, size = pop)) +
-  geom_point(alpha = 0.5)
-```
-
-**3. Other chart types**
-
-So far, we have only seen scatterplots (point geoms). But there are many other geoms we *could* add, including:
-
-* lines
-* histograms
-* boxplots and violin plots
-* barplots
-* smoothed curves
-
-Let's try some out
-
-What's different about this one?
-
-```
-ggplot(gapminder, aes(x = year, y = lifeExp, group = country, color = continent)) +
-  geom_line(alpha = 0.5)
-```
-
-How might this one be different?
-
-```
-ggplot(gapminder, aes(x = continent, y = lifeExp, fill = continent)) +
-  geom_boxplot()
-```
-
-Let's bust out a historgram.
-```
-ggplot(gapminder, aes(x = lifeExp)) +
-  geom_histogram(binwidth = 3)
-```
-
-And finally let's try to find how a mathematical model might interpret our data. Don't publish these, but they can be helpful for internal use.
-
-```
-ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, size = pop)) +
-  geom_point(aes(color = continent), alpha = 0.5) +
-  geom_smooth(se = FALSE, method = "loess", color = "grey30")
-```
-
-**4.Let's make something publishable**
-
-We want a focused chart to show readers. So let’s filter to a single year.
-
-```
-gapminder_2007 <- gapminder %>% filter(year == 2007)
-ggplot(gapminder_2007, aes(x = gdpPercap, y = lifeExp, color = continent, size = pop)) +
-  geom_point(alpha = 0.5)
-```
-
-Let's get fancy and use a logorithmic scale. Who kjnows what that is?
-
-Here's how we do that.
-
-```
-ggplot(gapminder_2007, aes(x = gdpPercap, y = lifeExp, color = continent, size = pop)) +
-  geom_point(alpha = 0.5) +
-  scale_x_log10()
-```
-
-Now it's time to add a title and change the name of the y-axis and legends using the labs function.
-
-```
-ggplot(gapminder_2007, aes(x = gdpPercap, y = lifeExp, color = continent, size = pop)) +
-  # add scatter points
-  geom_point(alpha = 0.5) +
-  # log-scale the x-axis
-  scale_x_log10() +
-  # change labels
-  labs(title = "GDP versus life expectancy in 2007",
-       x = "GDP per capita (log scale)",
-       y = "Life expectancy",
-       size = "Popoulation",
-       color = "Continent")
+gapminder %>% mutate(gdp = gdpPercap * pop) %>% arrange(desc(gdp))
 ```
 
 
-**5. Themes**
+**8. Charting**
 
-Mabye you, like me, kinda hate this gray background.
-
-Well, you can change it with the ggthemes package.
+Let's make a quick chart by first using filter.
 
 ```
-install.packages("ggthemes")
-library(ggthemes)
+us <- filter(gapminder, country == "United States")
 ```
 
-Let's take a look at some of [the available themes](https://yutannihilation.github.io/allYourFigureAreBelongToUs/ggthemes/) and try them out on that last chart.
+We're gonna feed that into **ggplot2**, the tidyverse's beloved package for creating charts.
 
-Finally, let's go crazy and see if we can figure out everything this is doing.
+The syntax of ggplot is a little different, you'll notice it uses plus signs instead of the pipe. Try this out:
 
 ```
-ggplot(gapminder_2007, aes(x = gdpPercap, y = lifeExp, color = continent, size = pop)) +
-  # add scatter points
-  geom_point(alpha = 0.5) +
-  # clean the axes names and breaks
-  scale_x_log10(breaks = c(1000, 10000),
-                limits = c(200, 120000)) +
-  # change labels
-  labs(title = "GDP versus life expectancy in 2007",
-       x = "GDP per capita (log scale)",
-       y = "Life expectancy",
-       size = "Popoulation (millions)",
-       color = "Continent") +
-  # change the size scale
-  scale_size(range = c(0.1, 10),
-             breaks = 1000000 * c(250, 500, 750, 1000, 1250),
-             labels = c("250", "500", "750", "1000", "1250")) +
-  # add a nicer theme
-  theme_classic(base_family = "Helvetica")
+ggplot(us, aes(x = year, y = lifeExp)) +
+ geom_line()
 ```
 
-And let's talk about how to save a chart you create in R.
+And you know what? It's not really any harder to plot every country in the Americas at once.
 
+```
+gapminder %>% filter(continent == "Americas") %>% ggplot(aes(x=year, y=lifeExp)) + geom_line(aes(color=country), lwd=1.5, alpha=.65)
+```
+
+What else could we do here?
+
+Can we make a small multiples chart?
+
+---
+
+### Links
+
+* Hadley Wickham's [great tidyverse tutorials](https://github.com/hadley/data-science-in-tidyverse)
 
 ---
 
 ### Homework
 
-* R Data Viz Assignment. Using data from your capstone or Final Project create two charts using ggplot.
-	* If you need inspiration, use code from our walkthrough today. Or, take a look at some of these [simple cool R chart examples](https://www.r-graph-gallery.com/).
-	* Due on **Monday by 5 PM**.
-* Story memo: 50-100 words about Final Project progress over last week
+* Submit story pitch for group data story, including ideas for story and graphic, and what datasets you could use (including links). At least 400 words. Due by MONDAY @ 5.

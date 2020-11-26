@@ -69,95 +69,202 @@ anime.timeline({loop: true})
   });
 </script>
 
+
 # Week 13
-This week, we're gonna talk election maps and interactivity. And then we'll start on a map of our own.
+This week, we're going further into mapmaking.
 
 ---
 
 ### Lecture
 
-[Slides](https://docs.google.com/presentation/d/1NFou_0UfhSHlNGxb3QEeVgLE2SBRFpB_J6gnVEkcnLQ/edit#slide=id.p)
+[Slides](https://docs.google.com/presentation/d/1HaD_hOaW3YWWGp0aiPlB7BESC_Bq-WkrgKn2XSjQy9c/edit?usp=sharing)
+
 
 ---
 
 ### Hands-on
 
-We've got some piping-hot data: the latest unemployment figures for California.
+**1. Download [this data](http://paldhous.github.io/NICAR/2015/data/qgis.zip).**
 
-You're the only data journalist around in the newsroom, and the editors want a map ASAP.
+There should be two files.
 
-What do you do?
+**2. Double click on the shapefile to open it up.**
 
-[Start here](https://data.edd.ca.gov/Labor-Force-and-Unemployment-Rates/Labor-Force-and-Unemployment-Rate-for-California-C/r8rw-9pxx).
+Notice EPSG:4269 at the bottom right. This defines the map projection and datum for the layer.
 
-We'll go over how to wrangle.
+Right-click on CA_counties_medicare in the Layers panel at left and select Properties>General. You should see the following under Coordinate reference system:
 
-And then you'll go into groups, and use QGIS to make another map using the data.
+![](http://paldhous.github.io/NICAR/2015/img/qgis_5.jpg)
 
-**Your editor demands a fresh map on the unemployment rate, putting this month's numbers in geographical context.** What can you come up with?
+EPSG:4269 and NAD83 mean that this shapefile is in an [Equirectangular projection](https://en.wikipedia.org/wiki/Equirectangular_projection), and the [NAD83 datum](https://en.wikipedia.org/wiki/North_American_Datum).
 
-For you map, please:
+(The Equirectangular projection, which draws a map with degrees of latitude and longitude the same size across the entire globe, is also the default for QGIS if no projection is specificied.)
 
-* Color counties based on unemployment rate
-* Add labels
-* Find the text annotation tool and add a note to the map
-* Export the map with a legend
+We'll select another projection for our map later. Let's close for now.
+
+**3. Explore our data**
+
+Now we need to color the areas for the CA_counties_medicare layer by values in the data. Right-click on it in the Layers panel and select Open Attribute Table.
+
+Scroll to the right of the table to see the fields detailing various categories of Medicare reimbursement.
+
+Very interesting.
+
+We are going to make [a choropleth map](https://datavizcatalogue.com/methods/choropleth.html) of reimbursements per enrollee for hospitals and skilled nursing facilities, in the hospital field.
+
+Why choose this kind of map? What'll we learn?
+
+**4. Change the colors**
 
 
-BTW, here is a [definition](https://web.archive.org/web/20061217002213/http://www.labormarketinfo.edd.ca.gov/article.asp?ARTICLEID=118) of *seasonally-adjusted*:
+To do this, close the attribute table and call up Properties>Style [also called Symbology] for the CA_counties_medicare layer. Select Graduated from the dropdown menu at top, which is the option to color data according to values of a continuous variable. Select 5 under Classes, and then New color ramp... under Color ramp. While QGIS has many available color ramps, we will use this opportunity to call in a ColorBrewer sequential color scheme.
 
-> Over the course of a year, the size of the labor force, the levels of employment and unemployment, and other measures of labor market activity undergo fluctuations due to seasonal events including changes in weather, harvests, major holidays, and school schedules.  Because these seasonal events follow a more or less regular pattern each year, their influence on statistical trends can be eliminated by seasonally adjusting the statistics from month to month.  These seasonal adjustments make it easier to observe the cyclical*, underlying trend, and other nonseasonal movements in the series.
+At the dialog box select [ColorBrewer](http://colorbrewer2.org/) and then Reds, and then click OK:
 
-> As a general rule, the monthly employment and unemployment numbers reported in the news are seasonally adjusted data.  Seasonally adjusted data are useful when comparing several months of data. Annual average estimates are calculated from the not seasonally adjusted data series.
+You will need to give the color ramp a name — the default Reds5 is fine. Select HOSPITAL under Column, and select Quantile (Equal Count) for Mode. This menu gives various options for automatically setting the boundaries between the five classes or bins. Then click the Classify button to produce the following display:
+
+![](http://paldhous.github.io/NICAR/2015/img/qgis_9.jpg)
+
+Now let’s edit the breaks manually to use values guided by the quantiles, but which will be easier for users to process when reading the map legend.
+
+Double-click on the first symbol and select 3250 for the Upper value and click OK. Then double-click on the Label for this symbol and edit the text to < $3,250. Carry on editing the values and labels until the display looks like this:
+
+![](http://paldhous.github.io/NICAR/2015/img/qgis_10.jpg)
+
+Click OK and the map should look like this:
+
+![](http://paldhous.github.io/NICAR/2015/img/qgis_11.jpg)
+
+We've done a lot of work already. Time to save the project, by selecting Project>Save.
+
+**5. Time to design**
+
+Let's make the boundaries white and see if that looks better. So open up the Style tab under Properties once more and click on Symbol>Change [or just the long, thin bar].... Then select Simple fill, click on the color for Border [or stroke color] and in the color wheel tab of the color picker, change the color to white, by moving each of the RGB sliders to 255:
+
+![](http://paldhous.github.io/NICAR/2015/img/qgis_12.jpg)
+
+Click on Symbol>Change [or just the long bar] again, and and set the Transparency to 50%. This will keep the relative distinctions between the colors, but tone them down a little so they don’t dominate the layer we will later plot on top.
+
+OK. The map should now look like this:
+
+![](http://paldhous.github.io/NICAR/2015/img/qgis_13.jpg)
+
+**6. Label o'clock**
+
+To add labels to the map, select Properties>Labels [you may need to specify Single Labels] and fill in the dialog box. Here I am adding a NAME label to each county, using Arial font, Italic style at a size of 11 points and with the color set to a HEX value of #4c4c4c for a dark gray:
+
+![](http://paldhous.github.io/NICAR/2015/img/qgis_14.jpg)
+
+Click OK and the map should now look like this:
+
+![](http://paldhous.github.io/NICAR/2015/img/qgis_15.jpg)
+
+Save again.
+
+**7. About that projection...**
+
+Now is a good time to give the project a projection: We will use variant of the Albers Equal Area Conic projection, *optimized for maps of California* (!).
+
+Select Project>Project Properties>CRS (for Coordinate Reference System) from the top menu, and check Enable 'on the fly' CRS transformation [new versions will not need to do this]. This will convert any subsequent layers we import into the Albers projection, also.
+
+Type Albers into the Filter box and select NAD83(HARN)/ California Albers, which has the code EPSG:3311.
+
+Click OK and the map should reproject. Notice how EPSG:3311 now appears at bottom right.
+
+**8. Go deeper with more data.**
+
+Let's add a layer showing locations and capacities hospitals/skilled nursing facilities.
+
+We're starting from a csv. Anyone remember how we did this last time?
+
+When you click OK you will be asked to select a projection, or CRS, for the data. [Gets wonky, but important.] You may be tempted to select the same Albers projection we have set for the project, but this will cause an error. QGIS will handle the conversion to that projection: Because this data is not yet projected, we should instead select a datum with a default Equirectangular projection, either WGS 84 EPSG:4326 or NAD83 EPSG:4297.
+
+Click OK and a large number of points will be added to the map:
+
+![](http://paldhous.github.io/NICAR/2015/img/qgis_20.jpg)
+
+Great. Let's take a quick look at the attribute table to see what kind of data we're working with.
+
+**9. Style these points...**
+
+...using color to distinguish hospitals from skilled nursing facilities, removing other facilities from the map, and scaling the circles according to the capacity of each facility.
+
+Sounds complicated, but it's not too tricky.
+
+Select Properties>Style [or Symbology] for the Healthcare_Facility_Locations layer, and accept Categorized from the top dropdown menu. Select TYPE under Column and then hit the Classify button. (Keeping Random colors for the Color ramp is fine, as we will later edit the colors manually). Select and then Delete facilities other than General Acute Care Hospital and Skilled Nursing Facility, like this:
+
+![](http://paldhous.github.io/NICAR/2015/img/qgis_21.jpg)
+
+To then have just the two left.
+
+Now click the Change button next to where it says Symbol [or the long color bar next to Symbol], and then click on the menu next to "Size" and go to "Size Assistant". Choose Capacity for the field [Source] and Radius for the Scale Method.
+
+[You may have to set from / to in newer versions of QGIS, from 0 to 1500]
+
+(We're scaling smaller than what the picture shows.)
+
+![](http://paldhous.github.io/NICAR/2015/img/qgis_23.jpg)
+
+**10.Control the size**
+
+Let's say we want to change the size.
+
+To fix this, return to Properties>Symbol>Size, then select
+- edit - and fill in the dialog box as follows:
+
+![](http://paldhous.github.io/NICAR/2015/img/qgis_24.jpg)
+
+We're just dividing the numbers in the CAPACITY field by 30.
+
+Good or no? Let's try another number until we get it right.
+
+In the main Style tab, click on each point symbol and select Simple marker to edit its color. Also set transparency for the symbols to 50%, as we did for the choropleth map.
+
+The final map should look something like this:
+
+![](http://paldhous.github.io/NICAR/2015/img/qgis_25.jpg)
+
+Good work!
+
+**11. If we have time: export and make a legend**
+
+We can export our finished map with a legend explaining the colors, so let’s change the name of the fields so they display nicely. Right-click on each layer and rename them `Facility type` and `Medicare reimbursement per enrollee`.
+
+To export the map, select Project>New Print Composer, give the composer an appropriate name and click OK. In the print composer window, select the following options in the Composition tab:
+
+![](http://paldhous.github.io/NICAR/2015/img/qgis_26.jpg)
+
+Now click the Add new map icon, which looks like a little scroll of paper. Draw a rectangle over the page area, and the map should appear, You can edit its size, and adjust its position, as desired.
 
 
+Once you are statisfied with the appearance of your map in the print composer, click the Add legend icon. It looks like a legend if you look very closely.
 
-...
+Draw a rectangle on the page where you want the legend to appear.
 
-([Here is something we will need](https://data.ca.gov/dataset/ca-geographic-boundaries))
+**12. Export**
+
+You can save your maps in raster image formats (JPG, PNG etc) from the Print Composer by clicking the Save Image icon. Boom!
+
+*This tutorial is based on [a session from NICAR 2015 by Peter Aldhous](http://paldhous.github.io/NICAR/2015/qgis.html)*
 
 ---
 
 ### Links
 
-* An example of [cool stuff](http://graphics.latimes.com/calmap-california-county-unemployment/) you can do with unemployment data.
-* Quartz on [how the unemployment rate can mislead](https://qz.com/877432/the-us-unemployment-rate-measure-is-deceptive-and-doesnt-need-to-be/)
-
-Election maps
-
-[Presenting the least misleading map of the 2016 election](https://www.washingtonpost.com/news/politics/wp/2018/07/30/presenting-the-least-misleading-map-of-the-2016-election/?utm_term=.0d639286a97d) | [An extremely detailed map of the 2016 election](https://www.washingtonpost.com/news/politics/wp/2018/07/30/presenting-the-least-misleading-map-of-the-2016-election/?utm_term=.0d639286a97d) | [Trump to display map of 2016 election results in the White House: report](https://thehill.com/blogs/blog-briefing-room/332927-trump-will-hang-map-of-2016-election-results-in-the-white-house)
-
-2018 election maps
-
-[WaPo](https://thehill.com/blogs/blog-briefing-room/332927-trump-will-hang-map-of-2016-election-results-in-the-white-house) | [NYT](https://www.nytimes.com/interactive/2018/11/06/us/elections/results-house-elections.html) | [LAT](https://www.latimes.com/projects/la-pol-na-us-general-election-results-2018/)
-
-Other/interactivity:
-
-* [In America's 'Worst Bike City,' Laws To Protect Cyclists Are Rarely Enforced](https://laist.com/2018/12/04/bike_safety_los_angeles_law_three-feet-law.php)
-* [The Problem With Interactive Graphics](https://www.fastcompany.com/3069008/the-problem-with-interactive-graphics)
-* [In Defense of Interactive Graphics](https://www.vis4.net/blog/2017/03/in-defense-of-interactive-graphics/)
-* [Why we are doing fewer  interactives](https://github.com/archietse/malofiej-2016/blob/master/tse-malofiej-2016-slides.pdf)
+* [Map projection video](https://www.youtube.com/watch?v=kIID5FDi2JQ)
+* [Google Maps now depicts the Earth as a globe](https://www.theverge.com/2018/8/5/17653122/google-maps-update-mercator-projection-earth-isnt-flat)
+* [Boston public schools map switch aims to amend 500 years of distortion](https://www.theguardian.com/education/2017/mar/19/boston-public-schools-world-map-mercator-peters-projection)
 
 ---
 
 ### Homework
 
-**Mapping assignment 2**
+* **TURN IN YOUR DRAFT!** It's due Monday at 5 PM.
 
-We talked election maps this week. Now it's your turn to make one of your own.
+### Map Homework
 
-[Click here to download the data](https://amendelson.github.io/usc-data-2021/data/prop64.zip) that you'll use.
+* Mapping Assignment 1. Due by Monday at 5 PM.
+	* Part 1: Download [this data](https://data.chhs.ca.gov/dataset/hospital-building-data) about the Seismic Ratings and Collapse Probabilities of California Hospitals. Plot them all on a map of California. (You have a shapefile with the counties from today's lesson.) Filter for only the buildings with an SPC rating of 1 or 2 (1 and 2 mean "assigned to buildings posing significant risk of collapse following a strong earthquake".) Export it, they way we did in class, with a legend.
+		* [Here's the data dictionary](https://data.chhs.ca.gov/dataset/seismic-ratings-and-collapse-probabilities-of-california-hospitals/resource/c075b694-aa9c-4ed1-8991-a06099db16b1) (i.e. descriptions of the fields in the data).
+	* Part 2: Using the data from the homework: write a memo for a story you could report. At least 100 words. Include your lede, sources you could interview, and a data visualization.
 
-What is it? It's precinct-level election results, from California's [landmark Proposition 64](https://ballotpedia.org/California_Proposition_64,_Marijuana_Legalization_(2016)) in 2016. That was the ballot measure that legalized recreational marijuana in the Golden State. The shapefile features precincts in Los Angeles County. Roughly 1 in 4 California voters lives here in L.A. County.
-
-I want you to **create and export a Prop 64 election map** in QGIS, with the following features:
-
-* A title
-* A legend
-* A text annotation, describing some takeaway or geographic trend in the election results map. [Here's how you make one](https://docs.qgis.org/2.14/fi/docs/user_manual/introduction/general_tools.html#annotation-tools)
-
-Once you do that, write a pitch of 100 words for a data story you could do with this information.
-
-Please send the map by 5 PM Monday.
-
-**Due Monday at 5 PM**.

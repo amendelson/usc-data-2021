@@ -71,96 +71,147 @@ anime.timeline({loop: true})
 
 
 # Week 15
+This week, we'll explore the wild world of geocoding.
 
-### Hands-on pt. 1 — correlation
+---
 
-[Inspiration](https://xkcd.com/552/) for today:
+### HW revue
 
-<img src = "https://imgs.xkcd.com/comics/correlation.png">
+You all put your own twist on this week's homework:
 
-Let's begin by installing and loading some packages.
+<img src="imgs/a.png" width="600">
+<img src="imgs/b.png" width="600">
+<img src="imgs/c.png" width="600">
+<img src="imgs/d.png" width="600">
+<img src="imgs/e.png" width="600">
+<img src="imgs/f.png" width="600">
+<img src="imgs/g.png" width="600">
+<img src="imgs/h.jpg" width="600">
+<img src="imgs/i.png" width="600">
+
+---
+
+### Lecture
+
+[Slides](https://docs.google.com/presentation/d/1gvbL1n2p5AbUQOqmIneBS9Lj3kRBJwn0PWXmygnxzUU/edit?usp=sharing)
+
+---
+
+### Hands-on
+
+**1. Get some data**
+
+Let's grab data on shootings involving L.A. County Sheriff's deputies [here](https://data.lacounty.gov/Criminal/All-Shooting-Incidents-for-Deputy-Involved-Shootin/d5zc-33fr).
+
+Let's open and explore in Excel. You'll notice that this does have lat/lon. That'll come in handy when we want to see how accurate our geocodes are.
+
+**2. Learn about geocoding in QGIS**
+
+There are a couple options [for how to do that](http://duspviz.mit.edu/tutorials/geocoding/).
+
+**3. Check out how the free version of a paid service works**
+
+Point your browser [here](https://www.geocod.io/)
+
+**4. Open file up in QGIS**
+
+I suggest EPSG 4269: NAD 83 as the CRS
+
+**5. Also open up the original file in QGIS**
+
+Do they match?
+
+**6. Let's do some reporting**
+
+And figure out how many of these shootings happen in census tracts with below average incomes.
+
+Start by firing up R. Begin with this:
 
 ```
-# install new
-install.packages("PerformanceAnalytics")
-install.packages("psych")
-
-# load them
-library(PerformanceAnalytics)
-library(psych)
+library(tidycensus)
 library(tidyverse)
+options(tigris_use_cache = TRUE)
 
+la <- get_acs(state = "CA", county = "Los Angeles", geography = "tract", variables = "B19013_001", geometry = TRUE)
 ```
 
-Let's load our data ... which I think is based on an old TV show.
+What'd we do there?
+
+This isn't really necessary, but it's nice to see how simple it is to map it in R.
 
 ```
-Data <- read_csv("https://amendelson.github.io/usc-data-2021/week15/Data.csv")
+la %>%
+  ggplot(aes(fill = estimate)) + 
+  geom_sf(color = NA) + 
+  coord_sf(crs = 26911) + 
+  scale_fill_viridis_c(option = "magma") 
 ```
 
-OK, one easy way to spot correlation is using charts. Let's try this.
+**7. Compare to median household income**
+
+Let's get the median household income for the county as a whole.
 
 ```
-pairs(data=Data,
-    ~ Grade + Weight + Calories + Sodium + Score)
+la_median <- get_acs(state = "CA", county = "Los Angeles", geography = "county", variables = "B19013_001", geometry = FALSE)
 ```
 
-The corr.test function in the psych package can be used in a similar way, with the output being a table of correlation coefficients and a table of p-values.
 
-A p-value is a measure of correlation.
-
-Let's get a dataframe of just numeric vectors.
+Alright here's the big comparison. Let's use case_when.
 
 ```
-Data_num <- Data %>% select(-Instructor)
+la$median <- case_when(
+    la$estimate >= la_median$estimate ~ "above median", 
+    TRUE ~ "below median")
 ```
-
-Now let's get the p-values.
-
-```
-corr.test(Data_num,
-          use    = "pairwise",
-          method = "pearson",
-          adjust = "none")
-```
-
-The thing to keep in mind: the closer to 1 or -1, the more significant the correlation.
-
-Another way to explore the correlation is through the PerformanceAnalytics package.
+And let's check how many tracts are below the median income.
 
 ```
-chart.Correlation(Data_num,
-                  method="pearson",
-                  histogram=TRUE,
-                  pch=16)
+la %>% group_by(median) %>% tally()
 ```
 
-And ggplot can also give us a good indication of correlation, by providing the 'line of best fit' with a confidence interval.
+**8. Export that data**
+
+I'm putting mine in my Downloads folder, you'll want to adjust accordingly.
 
 ```
-ggplot(Data,
-       aes(x = Calories,
-           y = Sodium)) +
-    geom_point() +
-    geom_smooth(method  = "lm",
-                formula = y ~ poly(x, 2, raw=TRUE), se = TRUE)
+install.packages("sf")
+library(sf)
+st_write(la, "~/Downloads/la.shp")
 ```
 
-*With debt to [this tutorial](https://rcompanion.org/handbook/I_10.html)*
+**9. Count points in polygon**
 
-### Part 2 — animation
+Add the shapefile.
 
-Let's check out something I've been meaning to explore: [gganimate](https://www.r-graph-gallery.com/271-ggplot2-animated-gif-chart-with-gganimate.html).
+Then, let's try this.
 
-### Part 3 — choose your own adventure
+<img src ="imgs/points-in-poly.png" width = "600">
 
-The htmlwidgets are a great way to get your data in front of your readers:
+Pretty strightforward. Now, let's open the attribute table and see what it did.
 
-* [htmlwidgets collection](https://www.htmlwidgets.org/index.html)
+We can highlight the highest counts, by selecting those rows.
 
-With any extra time, we can also check out these neat packages:
+**10. Let's figure out if most shootings happen in above or below median income tracts.**
 
-* [rayshader](https://www.rayshader.com/)
-* [mapdeck](https://symbolixau.github.io/mapdeck/articles/layers.html)
-* [datatables](https://rstudio.github.io/DT/)
+How do we do that? You tell me.
 
+---
+
+### Links
+
+Geocoding services
+
+* [US Census](https://geocoding.geo.census.gov/): Free! But not the most accurate option. US addresses only.
+* [Google Maps API](https://developers.google.com/maps/documentation/geocoding/start): Very accurate (but not perfect). 2,500 free geocodes per day. Pay beyond that. API Key required
+* [Geocodio](https://www.geocod.io/): API or upload. Fast, relatively cheap, accurate.
+
+Article from lecture
+
+* [Digital maps' unsung hero: how the geocoder puts us on the grid](https://www.theguardian.com/technology/2014/jan/13/google-maps-geocoder)
+
+---
+
+### Homework
+
+* Mapping Assignment 3: I want you to map a dataset related to your Final Project or capstone. Every group member needs to make their own map.
+* Story memo: 50-100 words about Final Project progress over last week

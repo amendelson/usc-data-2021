@@ -69,149 +69,95 @@ anime.timeline({loop: true})
   });
 </script>
 
-
 # Week 14
-This week, we'll explore the wild world of geocoding.
-
----
-
-### HW revue
-
-You all put your own twist on this week's homework:
-
-<img src="imgs/a.png" width="600">
-<img src="imgs/b.png" width="600">
-<img src="imgs/c.png" width="600">
-<img src="imgs/d.png" width="600">
-<img src="imgs/e.png" width="600">
-<img src="imgs/f.png" width="600">
-<img src="imgs/g.png" width="600">
-<img src="imgs/h.jpg" width="600">
-<img src="imgs/i.png" width="600">
+This week, we're gonna talk election maps and interactivity. And then we'll start on a map of our own.
 
 ---
 
 ### Lecture
 
-[Slides](https://docs.google.com/presentation/d/1qOnjRVqIvLJFLkA6Rs6fnn0HAJX3s7fY6wB9pVeiEIM/edit?usp=sharing)
+[Slides](https://docs.google.com/presentation/d/1AMlUiPW7RW-aVTi77P9EKl5XkXfvXZn8nsC_Jbp1AJw/edit?usp=sharing)
 
 ---
 
 ### Hands-on
 
-**1. Get some data**
+We've got some piping-hot data: the latest unemployment figures for California.
 
-Let's grab data on shootings involving L.A. County Sheriff's deputies [here](https://data.lacounty.gov/Criminal/All-Shooting-Incidents-for-Deputy-Involved-Shootin/d5zc-33fr).
+You're the only data journalist around in the newsroom, and the editors want a map ASAP.
 
-Let's open and explore in Excel. You'll notice that this does have lat/lon. That'll come in handy when we want to see how accurate our geocodes are.
+What do you do?
 
-**2. Learn about geocoding in QGIS**
+[Start here](https://data.edd.ca.gov/Labor-Force-and-Unemployment-Rates/Labor-Force-and-Unemployment-Rate-for-California-C/r8rw-9pxx).
 
-There are a couple options [for how to do that](http://duspviz.mit.edu/tutorials/geocoding/).
+We'll go over how to wrangle.
 
-**3. Check out how the free version of a paid service works**
+And then you'll go into groups, and use QGIS to make another map using the data.
 
-Point your browser [here](https://www.geocod.io/)
+**Your editor demands a fresh map on the unemployment rate, putting this month's numbers in geographical context.** What can you come up with?
 
-**4. Open file up in QGIS**
+For you map, please:
 
-I suggest EPSG 4269: NAD 83 as the CRS
-
-**5. Also open up the original file in QGIS**
-
-Do they match?
-
-**6. Let's do some reporting**
-
-And figure out how many of these shootings happen in census tracts with below average incomes.
-
-Start by firing up R. Begin with this:
-
-```
-library(tidycensus)
-library(tidyverse)
-options(tigris_use_cache = TRUE)
-
-la <- get_acs(state = "CA", county = "Los Angeles", geography = "tract", variables = "B19013_001", geometry = TRUE)
-```
-
-What'd we do there?
-
-This isn't really necessary, but it's nice to see how simple it is to map it in R.
-
-```
-la %>%
-  ggplot(aes(fill = estimate)) + 
-  geom_sf(color = NA) + 
-  coord_sf(crs = 26911) + 
-  scale_fill_viridis_c(option = "magma") 
-```
-
-**7. Compare to median household income**
-
-Let's get the median household income for the county as a whole.
-
-```
-la_median <- get_acs(state = "CA", county = "Los Angeles", geography = "county", variables = "B19013_001", geometry = FALSE)
-```
+* Color counties based on unemployment rate
+* Add labels
+* Find the text annotation tool and add a note to the map
+* Export the map with a legend
 
 
-Alright here's the big comparison. Let's use case_when.
+BTW, here is a [definition](https://web.archive.org/web/20061217002213/http://www.labormarketinfo.edd.ca.gov/article.asp?ARTICLEID=118) of *seasonally-adjusted*:
 
-```
-la$median <- case_when(
-    la$estimate >= la_median$estimate ~ "above median", 
-    TRUE ~ "below median")
-```
-And let's check how many tracts are below the median income.
+> Over the course of a year, the size of the labor force, the levels of employment and unemployment, and other measures of labor market activity undergo fluctuations due to seasonal events including changes in weather, harvests, major holidays, and school schedules.  Because these seasonal events follow a more or less regular pattern each year, their influence on statistical trends can be eliminated by seasonally adjusting the statistics from month to month.  These seasonal adjustments make it easier to observe the cyclical*, underlying trend, and other nonseasonal movements in the series.
 
-```
-la %>% group_by(median) %>% tally()
-```
+> As a general rule, the monthly employment and unemployment numbers reported in the news are seasonally adjusted data.  Seasonally adjusted data are useful when comparing several months of data. Annual average estimates are calculated from the not seasonally adjusted data series.
 
-**8. Export that data**
 
-I'm putting mine in my Downloads folder, you'll want to adjust accordingly.
 
-```
-install.packages("sf")
-library(sf)
-st_write(la, "~/Downloads/la.shp")
-```
+...
 
-**9. Count points in polygon**
-
-Add the shapefile.
-
-Then, let's try this.
-
-<img src ="imgs/points-in-poly.png" width = "600">
-
-Pretty strightforward. Now, let's open the attribute table and see what it did.
-
-We can highlight the highest counts, by selecting those rows.
-
-**10. Let's figure out if most shootings happen in above or below median income tracts.**
-
-How do we do that? You tell me.
+([Here is something we will need](https://data.ca.gov/dataset/ca-geographic-boundaries))
 
 ---
 
 ### Links
 
-Geocoding services
+* An example of [cool stuff](http://graphics.latimes.com/calmap-california-county-unemployment/) you can do with unemployment data.
+* Quartz on [how the unemployment rate can mislead](https://qz.com/877432/the-us-unemployment-rate-measure-is-deceptive-and-doesnt-need-to-be/)
 
-* [US Census](https://geocoding.geo.census.gov/): Free! But not the most accurate option. US addresses only.
-* [Google Maps API](https://developers.google.com/maps/documentation/geocoding/start): Very accurate (but not perfect). 2,500 free geocodes per day. Pay beyond that. API Key required
-* [Geocodio](https://www.geocod.io/): API or upload. Fast, relatively cheap, accurate.
+Election maps
 
-Article from lecture
+[Presenting the least misleading map of the 2016 election](https://www.washingtonpost.com/news/politics/wp/2018/07/30/presenting-the-least-misleading-map-of-the-2016-election/?utm_term=.0d639286a97d) | [An extremely detailed map of the 2016 election](https://www.washingtonpost.com/news/politics/wp/2018/07/30/presenting-the-least-misleading-map-of-the-2016-election/?utm_term=.0d639286a97d) | [Trump to display map of 2016 election results in the White House: report](https://thehill.com/blogs/blog-briefing-room/332927-trump-will-hang-map-of-2016-election-results-in-the-white-house)
 
-* [Digital maps' unsung hero: how the geocoder puts us on the grid](https://www.theguardian.com/technology/2014/jan/13/google-maps-geocoder)
+2018 election maps
+
+[WaPo](https://thehill.com/blogs/blog-briefing-room/332927-trump-will-hang-map-of-2016-election-results-in-the-white-house) | [NYT](https://www.nytimes.com/interactive/2018/11/06/us/elections/results-house-elections.html) | [LAT](https://www.latimes.com/projects/la-pol-na-us-general-election-results-2018/)
+
+Other/interactivity:
+
+* [In America's 'Worst Bike City,' Laws To Protect Cyclists Are Rarely Enforced](https://laist.com/2018/12/04/bike_safety_los_angeles_law_three-feet-law.php)
+* [The Problem With Interactive Graphics](https://www.fastcompany.com/3069008/the-problem-with-interactive-graphics)
+* [In Defense of Interactive Graphics](https://www.vis4.net/blog/2017/03/in-defense-of-interactive-graphics/)
+* [Why we are doing fewer  interactives](https://github.com/archietse/malofiej-2016/blob/master/tse-malofiej-2016-slides.pdf)
 
 ---
 
 ### Homework
 
-* Mapping Assignment 3: I want you to map a dataset related to your Final Project or capstone. Every group member needs to make their own map.
-* Story memo: 50-100 words about Final Project progress over last week
+**Mapping assignment 2**
+
+We talked election maps this week. Now it's your turn to make one of your own.
+
+[Click here to download the data](https://amendelson.github.io/usc-data-2021/data/prop64.zip) that you'll use.
+
+What is it? It's precinct-level election results, from California's [landmark Proposition 64](https://ballotpedia.org/California_Proposition_64,_Marijuana_Legalization_(2016)) in 2016. That was the ballot measure that legalized recreational marijuana in the Golden State. The shapefile features precincts in Los Angeles County. Roughly 1 in 4 California voters lives here in L.A. County.
+
+I want you to **create and export a Prop 64 election map** in QGIS, with the following features:
+
+* A title
+* A legend
+* A text annotation, describing some takeaway or geographic trend in the election results map. [Here's how you make one](https://docs.qgis.org/2.14/fi/docs/user_manual/introduction/general_tools.html#annotation-tools)
+
+Once you do that, write a pitch of 100 words for a data story you could do with this information.
+
+Please send the map by 5 PM Monday.
+
+**Due Monday at 5 PM**.

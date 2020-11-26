@@ -128,22 +128,22 @@ This class will involve the use of technical tools, and coding. But if you want 
 
 ## Class links
 
-* **[Week One](week1/)**: Course overview. Introductions.
-* **[Week Two](week2/)**: Class Project discussion.
-* **[Week Three](week3/)**: Visualizing Data with ggplot, Part 1 – faceting. Class project discussion.
-* **[Week Four](week4/)**: Visualizing Data with ggplot, Part 2 – layers and interactivity
-* **[Week Five](week5/)**: Class project discussion
-* **[Week Six](week6/)**: Writing functions and loops in R
-* **[Week Seven](week7/)**: Tidyuniverse in R – cleaning and transforming data.
-* **[Week Eight](week8/)**: Tidyuniverse in R – modeling data. Class project discussion
-* **[Week Nine](week9/)**: Github, Rmarkdown, data transformations
-* Spring Break
-* **[Week Ten](week10/)**: Mapping Part 1 – Buffers on steroids, spatial queries and spatial joins.
-* **[Week Eleven](week11/)**: Mapping Part 2 - Projections and the finer points of mapping.
-* **[Week Twelve](week12)**: Mapping Part 3 – Using Open Street Map and Plug-Ins
-* **[Week Thirteen](week13/)**: Mapping Part 4 – Interactive Maps. Class project discussion
-* **[Week Fourteen](week14/)**: Bulk geocoding data with an API
-* **[Week Fifteen](week15/)**: Overview of Jupyter Notebook and R Kernel. Using Markdown and Github.
+* Week One: MLK Day (no class)
+* **[Week Two](week2/)**: Course overview. Introductions.
+* **[Week Three](week3/)**: Class Project discussion.
+* **[Week Four](week4/)**: Visualizing Data with ggplot, Part 1 – faceting. Class project discussion.
+* Week Five: President's Day (no class)
+* **[Week Six](week6/)**: Visualizing Data with ggplot, Part 2 – layers and interactivity
+
+* **[Week Seven](week7/)**: Class project discussion
+* **[Week Eight](week8/)**: Writing functions and loops in R
+* **[Week Nine](week9/)**: Tidyuniverse in R – cleaning and transforming data.
+* **[Week Ten](week10/)**: Tidyuniverse in R – modeling data. Class project discussion
+* **[Week Eleven](week11/)**: Mapping Part 1 – Buffers on steroids, spatial queries and spatial joins.
+* **[Week Twelve](week12/)**: Mapping Part 2 - Projections and the finer points of mapping.
+* **[Week Thirteen](week13)**: Mapping Part 3 – Using Open Street Map and Plug-Ins
+* **[Week Fourteen](week14/)**: Mapping Part 4 – Interactive Maps. Class project discussion
+* **[Week Fifteen](week14/)**: Bulk geocoding data with an API
 * Final
 
 
