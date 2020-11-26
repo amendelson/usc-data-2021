@@ -85,22 +85,17 @@ We'll also do some housekeeping and get to know one another.
 
 ### Links
 
-[R Studio](https://www.rstudio.com/products/rstudio/download/)
-
-[R](https://cran.rstudio.com/)
+[R Studio Cloud](https://rstudio.cloud)
 
 [QGIS](https://download.qgis.org/)
-
-[Traffic count data](https://data.lacity.org/A-Livable-and-Sustainable-City/LADOT-Traffic-Counts-Summary/94wu-3ps3)
 
 ---
 
 ### Homework
 
-* [Fill out the survey](https://forms.gle/9pEoHBL82tSPCN3YA)
+* [Fill out the survey](https://docs.google.com/forms/d/e/1FAIpQLSeozOxR0masijElTRJ7_QpU8TLqPRLpgm1hmAUDd6NpN0MqEQ/viewform?usp=sf_link)
 
-* [Install or update R](https://www.rstudio.com/products/rstudio/download/)
-
-* [Install or update R Studio](https://www.rstudio.com/products/rstudio/download/)
+* [Make sure you have R Studio Cloud access and joing our class workspace](https://rstudio.cloud)
+	* [class workspace link](https://rstudio.cloud/spaces/105161/join?access_code=Ei0JeYBwYTQgyrvAjA02kN1v1BEf0ZHs9vIy8XMy)
 
 * Email Aaron (aaron.a.mendelsonATgmailDOTcom) if you want to choose your own group for the Final Project

@@ -118,7 +118,7 @@ var end = new Date('05/07/2021 5:00 PM');
 -->
 <br>
 
-Welcome to the website for JOUR 561: Fundamentals of Data Journalism Reporting. You'll find links to course materials here. You can get to this page by typing in `tiny.cc/2wv4gz` in your browser's address bar.
+Welcome to the website for JOUR 561: Fundamentals of Data Journalism Reporting. You'll find links to course materials here. You can get to this page by typing in `http://tiny.cc/uscdata` in your browser's address bar.
 
 Here is [the class syllabus](docs/syllabus.pdf).
 
