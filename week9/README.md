@@ -229,13 +229,14 @@ It's good. So let's see how it works.
 
 Download the shapefile of states from the U.S. Census [here](https://www.census.gov/cgi-bin/geo/shapefiles/index.php).
 
-Unzip it and put it in the same folder we've been using today.
+Then upload the zip to your R Studio Cloud project.
 
-Now we'll head back to our script and open it up. It should look something like this
+To access the data, you'll need to type something like this
 
 ```
-states <- readOGR("path/to/yourfile/",
-  layer = "tl_2019_us_state", GDAL1_integer64_policy = TRUE)
+states <- readOGR("/cloud/project/",
+                  layer = "tl_2019_us_state", GDAL1_integer64_policy = TRUE)
+
 ```
 
 Next let's select some states that are cool.
@@ -274,8 +275,4 @@ Now check out [other options for basemaps on the R Leaflet official site](https:
 ### Homework
 
 
-* Map a census dataset.
-	* [Go here](https://censusreporter.org) to explore datasets and find their table names.
-* Write 100 or so words about what you learned by mapping the data, possible stories you could do based of this analysis.
-* I want to see different colors and basemaps on your map.
-
+* Work on your Final Project!
