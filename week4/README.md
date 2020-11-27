@@ -99,7 +99,7 @@ library(tidyverse)
 library(gapminder)
 ```
 
-Let's use some of the commands we learned last week to figure out what `gapminder` is.
+Let's use some simple commands to figure out what `gapminder` is.
 
 ```
 head(gapminder)
@@ -263,4 +263,4 @@ Can we make a small multiples chart?
 
 ### Homework
 
-* Submit story pitch for group data story, including ideas for story and graphic, and what datasets you could use (including links). At least 400 words. Due by MONDAY @ 5.
+* Submit story pitch for data story, including ideas for story and graphic, and what datasets you could use (including links). At least 400 words. Due by Friday @ 5.

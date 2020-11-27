@@ -77,9 +77,7 @@ This week, we're going to talk about what makes a great data story, and how you 
 
 ### Survey responses
 
-<img src="survey1.png" width = "1000">
-
-<img src="survey2.png" width = "1000">
+TKTKTKKTK
 
 ---
 
@@ -105,4 +103,4 @@ Some stories mentioned:
 ### Homework
 
 * **Important**: Sign up [using this spreadsheet](https://docs.google.com/spreadsheets/d/14IInAih3Vt4fj4e2IH1uIUXeJbnzcM8XhdVx9w-V8oc/edit#gid=0) to do a critique
-* **Also important**: Final Project: Every group pitches 3 ideas by Monday @ 5 PM
+* **Also important**: Final Project: Every person/group pitches 3 ideas by Friday @ 5 PM
