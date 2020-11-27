@@ -83,6 +83,7 @@ anime.timeline({loop: true})
 There's a great R package for importing census data. Let's install and load it.
 
 ```
+install.packages("leaflet")
 library(leaflet)
 library(tidyverse)
 ```
@@ -98,21 +99,25 @@ To get the data from the Census' API, you need to provide an API Key. Find yours
 census_api_key("TK", overwrite = FALSE, install = FALSE)
 ```
 
-Once you've done that, you can quickly grab data. If you want to know the median rent by state in 1990 ... now you can.
+Once you've done that, you can quickly grab data. If you want to know the median age by state in 2010 ... now you can.
 
 ```
-m90 <- get_decennial(geography = "state", variables = "H043A001", year = 1990)
+age10 <- get_decennial(geography = "state",
+                       variables = "P013001",
+                       year = 2010)
+
+head(age10)
 ```
 
 It can also easily be plotted.
 
 ```
-m90 %>%
+age10 %>%
   ggplot(aes(x = value, y = reorder(NAME, value))) +
   geom_point()
 ```
 
-We can also grab data from the more-frequently-updated American Community Survey. It's like a rolling Census that's being conducted all the time.
+We can use this package to grab data from the more-frequently-updated American Community Survey. It's like a rolling Census that's being conducted all the time.
 
 Let's look at public transit.
 
@@ -153,12 +158,14 @@ head(transpo)
 
 We need to join that transportation data to our shapefile. Unfortunately, the syntax there is a little different. Fortunately, it does work.
 
-For this, we'll need to bring back the states shapefile we used last week,
+For this, we'll need to bring back the states shapefile we used last week.
+
+You'll need to re-upload the zip file.
 
 ```
 library(rgdal)
-states <- readOGR("path/to/yourfile/",
-  layer = "tl_2019_us_state", GDAL1_integer64_policy = TRUE)
+states <- readOGR("/cloud/project",
+                  layer = "tl_2019_us_state", GDAL1_integer64_policy = TRUE)
 ```
 
 Then we can do a join.
@@ -191,7 +198,6 @@ If we have extra time, we'll work on adding [popup text](https://rstudio.github.
 
 ### Homework
 
-* Github: Create an account if you don't already have one. If you do, make sure you know the password.
 * HW: Finish coding if we didn't in class.
 * Final Project: Your data analysis should almost done. You should be reporting and writing as you go.
 * Story memo: 50-100 words about Final Project progress over last week
