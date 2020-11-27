@@ -94,6 +94,8 @@ We're using the the gapminder dataset again this week.
 First, fire up R Studio. Then, we'll load everything we need and remind ourselves what this data looks like.
 
 ```
+install.packages("gapminder")
+
 library(tidyverse)
 library(gapminder)
 head(gapminder)
@@ -284,5 +286,5 @@ And let's talk about how to save a chart you create in R.
 
 * R Data Viz Assignment. Using data from your capstone or Final Project create two charts using ggplot.
 	* If you need inspiration, use code from our walkthrough today. Or, take a look at some of these [simple cool R chart examples](https://www.r-graph-gallery.com/).
-	* Due on **Monday by 5 PM**.
+	* Due on **Friday by 5 PM**.
 * Story memo: 50-100 words about Final Project progress over last week

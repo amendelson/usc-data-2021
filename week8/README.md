@@ -257,6 +257,5 @@ alive_stats %>% ggplot(aes(x=yr, y=count)) + geom_bar(stat="identity")
 
 * **R Data Viz Assignment**. Using data from your Final Project create two charts using ggplot.
 	* If you need inspiration, use code from our walkthrough today. Or, take a look at some of these simple cool R chart examples.
-	* Due on Monday by 5 PM.
+	* Due on Friday by 5 PM.
 * [Go to this page and register for a Census API Key](https://api.census.gov/data/key_signup.html)
-* [Create](https://github.com/join) or make sure you have a Github account and know the PW
