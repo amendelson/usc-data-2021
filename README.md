@@ -130,19 +130,19 @@ This class will involve the use of technical tools, and coding. But if you want 
 
 * Week One: MLK Day (no class)
 * **[Week Two](week2/)**: Course overview. Introductions.
-* **[Week Three](week3/)**: Class Project discussion.
-* **[Week Four](week4/)**: Visualizing Data with ggplot, Part 1 – faceting. Class project discussion.
+* Week Three: Class Project discussion.
+* Week Four: Visualizing Data with ggplot, Part 1 – faceting. Class project discussion.
 * Week Five: President's Day (no class)
-* **[Week Six](week6/)**: Visualizing Data with ggplot, Part 2 – layers and interactivity
-* **[Week Seven](week7/)**: Class project discussion
-* **[Week Eight](week8/)**: Writing functions and loops in R
-* **[Week Nine](week9/)**: Tidyuniverse in R – cleaning and transforming data.
-* **[Week Ten](week10/)**: Tidyuniverse in R – modeling data. Class project discussion
-* **[Week Eleven](week11/)**: Mapping Part 1 – Buffers on steroids, spatial queries and spatial joins.
-* **[Week Twelve](week12/)**: Mapping Part 2 - Projections and the finer points of mapping.
-* **[Week Thirteen](week13)**: Mapping Part 3 – Using Open Street Map and Plug-Ins
-* **[Week Fourteen](week14/)**: Mapping Part 4 – Interactive Maps. Class project discussion
-* **[Week Fifteen](week14/)**: Bulk geocoding data with an API
+* Week Six: Visualizing Data with ggplot, Part 2 – layers and interactivity
+* Week Seven: Class project discussion
+* Week Eight: Writing functions and loops in R
+* Week Nine: Tidyuniverse in R – cleaning and transforming data.
+* Week Ten: Tidyuniverse in R – modeling data. Class project discussion
+* Week Eleven: Mapping Part 1 – Buffers on steroids, spatial queries and spatial joins.
+* Week Twelve: Mapping Part 2 - Projections and the finer points of mapping.
+* Week Thirteen: Mapping Part 3 – Using Open Street Map and Plug-Ins
+* Week Fourteen: Mapping Part 4 – Interactive Maps. Class project discussion
+* Week Fifteen: Bulk geocoding data with an API
 * Final
 
 <br>

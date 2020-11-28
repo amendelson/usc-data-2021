@@ -259,11 +259,11 @@ You can save your maps in raster image formats (JPG, PNG etc) from the Print Com
 
 ### Homework
 
-* **TURN IN YOUR DRAFT!** It's due Monday at 5 PM.
+* **TURN IN YOUR DRAFT!** It's due Friday at 5 PM.
 
 ### Map Homework
 
-* Mapping Assignment 1. Due by Monday at 5 PM.
+* Mapping Assignment 1. Due by Friday at 5 PM.
 	* Part 1: Download [this data](https://data.chhs.ca.gov/dataset/hospital-building-data) about the Seismic Ratings and Collapse Probabilities of California Hospitals. Plot them all on a map of California. (You have a shapefile with the counties from today's lesson.) Filter for only the buildings with an SPC rating of 1 or 2 (1 and 2 mean "assigned to buildings posing significant risk of collapse following a strong earthquake".) Export it, they way we did in class, with a legend.
 		* [Here's the data dictionary](https://data.chhs.ca.gov/dataset/seismic-ratings-and-collapse-probabilities-of-california-hospitals/resource/c075b694-aa9c-4ed1-8991-a06099db16b1) (i.e. descriptions of the fields in the data).
 	* Part 2: Using the data from the homework: write a memo for a story you could report. At least 100 words. Include your lede, sources you could interview, and a data visualization.

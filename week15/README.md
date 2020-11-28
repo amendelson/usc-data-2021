@@ -79,15 +79,7 @@ This week, we'll explore the wild world of geocoding.
 
 You all put your own twist on this week's homework:
 
-<img src="imgs/a.png" width="600">
-<img src="imgs/b.png" width="600">
-<img src="imgs/c.png" width="600">
-<img src="imgs/d.png" width="600">
-<img src="imgs/e.png" width="600">
-<img src="imgs/f.png" width="600">
-<img src="imgs/g.png" width="600">
-<img src="imgs/h.jpg" width="600">
-<img src="imgs/i.png" width="600">
+TKTKTKKTKT
 
 ---
 
@@ -213,5 +205,5 @@ Article from lecture
 
 ### Homework
 
-* Mapping Assignment 3: I want you to map a dataset related to your Final Project or capstone. Every group member needs to make their own map.
+* Mapping Assignment 3: I want you to map a dataset related to your Final Project or capstone. Due by Friday at 5 PM.
 * Story memo: 50-100 words about Final Project progress over last week

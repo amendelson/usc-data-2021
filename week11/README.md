@@ -85,7 +85,7 @@ This week, we're diving head first into mapping.
 
 **1. Download these**
 
-[Link to pre-k data](../data/prek_sites.csv) | [Caltrans transpo GIS data](https://gisdata-caltrans.opendata.arcgis.com/datasets/77f2d7ba94e040a78bfbe36feb6279da_0) (we're using the the "SHN lines" data)
+[Link to pre-k data](../data/prek_sites.csv) | [Caltrans transpo GIS data](https://gisdata-caltrans.opendata.arcgis.com/datasets/77f2d7ba94e040a78bfbe36feb6279da_0) (we're using the the "SHN lines" data, download the shapefile)
 
 **2. Unzip the highways shapefile and double click to open in QGIS**
 
@@ -165,5 +165,5 @@ Let's open up the attribute table and see what actually happened under the hood.
 
 ### Homework
 
-* **Final Project**: You should be working on drafts of story and graphics, looking for unanswered questions. The rough draft is due on April 13!!!
+* **Final Project**: You should be working on drafts of story and graphics, looking for unanswered questions. The rough draft is due on April 16!!!
 * Story memo: 50-100 words about Final Project progress over last week

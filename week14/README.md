@@ -129,7 +129,7 @@ Election maps
 
 2018 election maps
 
-[WaPo](https://thehill.com/blogs/blog-briefing-room/332927-trump-will-hang-map-of-2016-election-results-in-the-white-house) | [NYT](https://www.nytimes.com/interactive/2018/11/06/us/elections/results-house-elections.html) | [LAT](https://www.latimes.com/projects/la-pol-na-us-general-election-results-2018/)
+[CNN](https://www.cnn.com/election/2020/results/president) | [NYT](https://www.nytimes.com/interactive/2020/11/03/us/elections/results-president.html) | [LAT](https://www.latimes.com/projects/2020-presidential-election-live-results/)
 
 Other/interactivity:
 
@@ -158,6 +158,6 @@ I want you to **create and export a Prop 64 election map** in QGIS, with the fol
 
 Once you do that, write a pitch of 100 words for a data story you could do with this information.
 
-Please send the map by 5 PM Monday.
+Please send the map by 5 PM Friday.
 
-**Due Monday at 5 PM**.
+**Due Friday at 5 PM**.

@@ -201,4 +201,4 @@ If we have extra time, we'll work on adding [popup text](https://rstudio.github.
 * HW: Finish coding if we didn't in class.
 * Final Project: Your data analysis should almost done. You should be reporting and writing as you go.
 * Story memo: 50-100 words about Final Project progress over last week
-
+* [Download the latest "stable" version of QGIS](https://qgis.org/en/site/forusers/download.html), likely 3.10
